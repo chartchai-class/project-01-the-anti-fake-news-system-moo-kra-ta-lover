@@ -1,3 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&family=Sumana:wght@400;700&display=swap');
+
+@font-face {
+  font-family: Sumana;
+  font-family: Inter;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@theme {
+  --font-sumana: Sumana, 'sans-serif';
+  --font-inter: Inter, 'sans-serif';
+}
