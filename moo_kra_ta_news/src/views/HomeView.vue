@@ -5,5 +5,6 @@ import NewsCarousel from '../components/NewsCarousel.vue';
 <template>
   <main>
     <NewsCarousel />
+    <h1>Welcome to Moo Kra Ta News</h1>
   </main>
 </template>
