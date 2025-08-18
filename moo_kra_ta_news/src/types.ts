@@ -6,6 +6,13 @@ export interface News{
     reporter: string
     reportDate: string
     imageUrl: string[] | undefined
-    comments: []
+    comments: Comment[]
 }
 
+export interface Comment {
+    id: number
+    user: string
+    vote: "Fake" | "Real"
+    comment: string
+    imageUrl: string[]
+}
