@@ -4,10 +4,11 @@ import type { News } from '@/types';
 import { ref, onMounted } from 'vue';
 import NewsService from '@/services/NewsService';
 import NavTab from '@/components/home-page/NavTab.vue';
+import NewsCard from '@/components/NewsCard.vue';
 const news = ref<News[]>([]);
 
 onMounted(async () => {
-  const response = await NewsService.getNews();
+  const response = await NewsService.getNews(4, 1);
   news.value = response.data;
   console.log(news.value);
 });
@@ -34,6 +35,12 @@ onMounted(async () => {
         <NavTab text="Business" :isActive="false" />
       </div>
     </div>
+
+    <h1 class="text-2xl font-semibold">All News</h1>
+
+   <div class="grid grid-cols-4 gap-4">
+     <NewsCard v-for="newsItem in news" :key="newsItem.id" :news="newsItem" />
+   </div>
 
   </main>
 </template>
