@@ -22,6 +22,15 @@ watchEffect(() => {
       })
   }
 })
+
+const newsVote = computed(() => {
+  if (!news.value?.comments?.length) return null
+  const realCount = news.value.comments.filter(c => c.vote === 'Real').length
+  const fakeCount = news.value.comments.filter(c => c.vote === 'Fake').length
+  return realCount >= fakeCount ? 'Real' : 'Fake'
+})
+
+
 </script>
 
 <template>
@@ -41,37 +50,46 @@ watchEffect(() => {
 
         <!-- News section -->
         <div v-if="news">
-          <div class="mx-auto p-6 bg-white rounded-2xl shadow-md border border-gray-200">
-            <div class="flex items-center justify-between">
-  <!-- Left: Science tag -->
-  <span class="inline-block bg-blue-500 text-white text-xs font-semibold px-3 py-1 rounded-full">
-    Science
-  </span>
+          <div class="shadow-card hover:shadow-news transition-all duration-300">
+            <div class="mx-auto p-6 bg-white rounded-2xl shadow-md border border-gray-200">
+              <div class="flex items-center justify-between">
+                <!-- Vote Indicator -->
+                <div class="h-8 w-24 rounded-full flex items-center justify-center gap-2"
+                  :class="newsVote === 'Real' ? 'bg-[#E8F5EC]' : 'bg-[#F5E8E8]'">
+                  <Check v-if="newsVote === 'Real'" class="text-[#2E9B40]" />
+                  <TriangleAlert v-if="newsVote === 'Fake'" class="text-[#9B2E30]" />
+                  <span :class="newsVote === 'Real' ? 'text-[#2E9B40]' : 'text-[#9B2E30]'">
+                    {{ newsVote }}
+                  </span>
+                </div>
 
-  <!-- Right: Reporter avatar + name -->
-  <div class="flex items-center space-x-2">
-    <div
-      :class="[userProfile.bgColor, 'rounded-full w-8 h-8 flex items-center justify-center text-sm text-white']"
-    >
-      {{ userProfile.initials }}
-    </div>
-    <span class="text-gray-500 text-sm">{{ news?.reporter }}</span>
-  </div>
-</div>
+                <div class="flex items-center space-x-2">
+                  <div
+                    :class="[userProfile.bgColor, 'rounded-full w-8 h-8 flex items-center justify-center text-sm text-white']">
+                    {{ userProfile.initials }}
+                  </div>
+                  <span class="text-gray-500 text-sm">{{ news?.reporter }}</span>
+                </div>
+              </div>
 
 
-            <h2 class="mt-4 text-2xl font-bold text-gray-900">
-              <span>{{ news?.topic }}</span>
-            </h2>
+              <h2 class="mt-4 text-2xl font-bold text-gray-900">
+                <span>{{ news?.topic }}</span>
+              </h2>
 
-            <p class="mt-4 text-gray-700 leading-relaxed">
-              <span>{{ news?.fullDetail }}</span>
-            </p>
+              <p class="mt-4 text-gray-700 leading-relaxed">
+                <span>{{ news?.fullDetail }}</span>
+              </p>
 
+            </div>
           </div>
+
         </div>
 
         <!--  -->
+        <div>
+          
+        </div>
       </div>
 
     </div>
