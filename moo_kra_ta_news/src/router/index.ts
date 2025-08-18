@@ -16,7 +16,7 @@ const router = createRouter({
       component: HomeView,
     },
     {
-      path: '/event/:id',
+      path: '/new/:id',
       name: 'news-detail-view',
       component: NewsDetailView,
       props: true,
