@@ -38,7 +38,7 @@ onMounted(async () => {
 
     <h1 class="text-2xl font-semibold">All News</h1>
 
-   <div class="grid grid-cols-4 gap-4">
+   <div class="grid grid-cols-4 gap-5 w-full">
      <NewsCard v-for="newsItem in news" :key="newsItem.id" :news="newsItem" />
    </div>
 

@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import NewsService from '@/services/NewsService';
 import type { News } from '@/types';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { RouterLink } from 'vue-router';
 import CommentView from './CommentView.vue';
 import { formatDate } from '@/utils/dateFormatter';
+import { getUserProfile } from '@/utils/userProfile';
 
 const news = ref<News | null>(null);
 const id = ref<number>(1);
+
+const userProfile = computed(() => getUserProfile(news.value?.reporter || ''));
 
 onMounted(async () => {
   NewsService.getNewsById(id.value)
@@ -33,7 +36,7 @@ onMounted(async () => {
         <h1>{{ news.topic }}</h1>
 
         <div class="flex items-center gap-2">
-            <div class="rounded-full w-10 h-10 bg-indigo-500 flex items-center justify-center text-3xl text-white">{{ news.reporter.charAt(0).toUpperCase() }}</div>
+            <div :class="[userProfile.bgColor, 'rounded-full w-10 h-10 flex items-center justify-center text-3xl text-white']">{{ userProfile.initials }}</div>
             <span>{{ news.reporter }} • {{ formatDate(news.reportDate) }}</span>
         </div>
 
