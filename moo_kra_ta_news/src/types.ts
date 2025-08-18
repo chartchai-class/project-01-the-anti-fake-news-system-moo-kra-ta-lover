@@ -5,7 +5,7 @@ export interface News{
     fullDetail: string
     reporter: string
     reportDate: string
-    imageUrl: []
+    imageUrl: string[] | undefined
     comments: []
 }
 
