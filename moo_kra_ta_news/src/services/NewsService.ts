@@ -12,5 +12,8 @@ const apiClient = axios.create({
 export default {
   getNews() {
     return apiClient.get('/news');
-  }
+  },
+  getNewsById(id: number) {
+    return apiClient.get(`/news/`+id);
+  },
 };
