@@ -16,7 +16,7 @@ const router = createRouter({
       component: HomeView,
     },
     {
-      path: '/new/:id',
+      path: '/new/:id/',
       name: 'news-detail-view',
       component: NewsDetailView,
       props: true,
@@ -41,7 +41,7 @@ const router = createRouter({
       },
       children: [
         {
-          path: '',
+          path: 'vote',
           name: 'news-vote-view',
           component: NewsVoteView,
           props: true,
@@ -64,6 +64,12 @@ const router = createRouter({
       name: 'network-error-view',
       component: NetworkErrorView,
     },
+    {
+  path: '/new/:id/vote',
+  name: 'news-vote-view',
+  component: NewsVoteView,
+  props: true,
+},
   ],
 })
 

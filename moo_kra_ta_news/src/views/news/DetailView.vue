@@ -10,6 +10,7 @@ import CommentView from './CommentView.vue';
 const store = useNewsStore()
 const { news } = storeToRefs(store)
 
+
 const userProfile = computed(() => getUserProfile(news.value?.reporter || ''));
 
 </script>
@@ -41,7 +42,7 @@ const userProfile = computed(() => getUserProfile(news.value?.reporter || ''));
 
     </div>
 
-    <RouterLink to="/Vote">
+    <RouterLink :to="{ name: 'news-vote-view', params: { id: news?.id } }">
     <div class="my-8">
         <button class="flex p-4 justify-between items-center w-full bg-[#F5F5F5] rounded-lg border border-gray-200 shadow-sm hover:shadow-md hover:bg-gray-50 transition-all">
 
