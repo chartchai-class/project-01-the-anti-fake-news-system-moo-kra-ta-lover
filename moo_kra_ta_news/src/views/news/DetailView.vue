@@ -4,6 +4,8 @@ import type { News } from '@/types';
 import { onMounted, ref } from 'vue';
 import { RouterLink } from 'vue-router';
 import CommentView from './CommentView.vue';
+import { formatDate } from '@/utils/dateFormatter';
+
 const news = ref<News | null>(null);
 const id = ref<number>(1);
 
@@ -11,26 +13,13 @@ onMounted(async () => {
   NewsService.getNewsById(id.value)
     .then(response => {
         news.value = response.data;
-        console.log(news.value);
-
+        // console.log(news.value);
     })
     .catch(error => {
         console.error('Error fetching news by ID:', error);
     });
 });
 
-function formatDate(dateStr: string): string {
-  if (!dateStr) return '';
-  const date = new Date(dateStr);
-  if (isNaN(date.getTime())) return dateStr;
-
-  const weekday = date.toLocaleDateString("en-US", { weekday: "short" });
-  const month = date.toLocaleDateString("en-US", { month: "long" });
-  const day = date.toLocaleDateString("en-US", { day: "numeric" });
-  const year = date.toLocaleDateString("en-US", { year: "numeric" });
-
-  return `${weekday} ${month} ${day}, ${year}`;
-}
 </script>
 <template>
 
