@@ -41,7 +41,7 @@ const sectionTitle = computed(() => {
 </script>
 
 <template>
-  <main class="flex flex-col mx-auto max-w-7xl gap-4 p-6 lg:px-8">
+  <main class="flex flex-col mx-auto max-w-7xl gap-6 p-6 lg:px-8">
     <div class="w-full flex flex-col items-center justify-center bg-neutral-100 rounded-lg py-6">
       <h1 class="uppercase tracking-[3.20px] font-medium leading-loose">Welcome to Moo Kra Ta News</h1>
       <div class="text-3xl font-semibold leading-[50px] text-center flex flex-col items-center justify-center">
