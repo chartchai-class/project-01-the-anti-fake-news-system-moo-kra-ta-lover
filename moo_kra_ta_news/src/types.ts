@@ -16,3 +16,7 @@ export interface Comment {
     comment: string
     imageUrl: string[]
 }
+
+export interface NewsState {
+    news: News | null
+}

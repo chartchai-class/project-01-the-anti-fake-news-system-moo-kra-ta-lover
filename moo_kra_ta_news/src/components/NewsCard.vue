@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import StatusCard from '@/components/home-page/StatusCard.vue';
 import { type News } from '@/types';
 import { formatDate } from '@/utils/dateFormatter';
-import { computed } from 'vue';
 import { getUserProfile } from '@/utils/userProfile';
-import StatusCard from '@/components/home-page/StatusCard.vue';
+import { computed } from 'vue';
 
 const props = defineProps<{
   news: News;
@@ -22,7 +22,7 @@ const fakeComments = computed(() => {
 </script>
 
 <template>
-  <RouterLink :to=" { name: 'detail', params: { id: news.id } }">
+  <RouterLink :to=" { name: 'news-detail-view', params: { id: news.id } }">
     <div class="cursor-pointer flex flex-col w-full gap-3.5 hover:scale-101">
       <div class="relative">
         <img

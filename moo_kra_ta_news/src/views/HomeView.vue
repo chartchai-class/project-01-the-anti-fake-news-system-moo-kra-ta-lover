@@ -1,16 +1,21 @@
 <script setup lang="ts">
-import NewsCarousel from '../components/home-page/NewsCarousel.vue';
-import type { News } from '@/types';
-import { ref, onMounted } from 'vue';
-import NewsService from '@/services/NewsService';
 import NavTab from '@/components/home-page/NavTab.vue';
 import NewsCard from '@/components/NewsCard.vue';
+import NewsService from '@/services/NewsService';
+import type { News } from '@/types';
+import { onMounted, ref } from 'vue';
+import NewsCarousel from '../components/home-page/NewsCarousel.vue';
 const news = ref<News[]>([]);
 
 onMounted(async () => {
-  const response = await NewsService.getNews();
-  news.value = response.data;
-  console.log(news.value);
+  try {
+    const response = await NewsService.getNews();
+    news.value = response.data;
+    console.log(news.value);
+  } catch (error) {
+    console.error('Failed to fetch news:', error);
+    // Handle the error appropriately
+  }
 });
 
 </script>

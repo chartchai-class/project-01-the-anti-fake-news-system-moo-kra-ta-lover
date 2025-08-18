@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import CommentItem from '@/components/CommentItem.vue';
-import NewsService from '@/services/NewsService';
-import type { News } from '@/types';
-import { computed, onMounted, ref } from 'vue';
-const news = ref<News | null>(null);
-const id = ref<number>(1);
+import { useNewsStore } from '@/stores/news';
+import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
+
+const store = useNewsStore()
+const { news } = storeToRefs(store)
 
 const totalComments = computed(() => {
   return news.value?.comments?.length || 0;
@@ -18,15 +19,7 @@ const fakeComments = computed(() => {
   return news.value?.comments?.filter(comment => comment.vote === 'Fake').length || 0;
 });
 
-onMounted(async () => {
-  try {
-    const response = await NewsService.getNewsById(id.value);
-    news.value = response.data;
-    console.log(news.value);
-  } catch (error) {
-    console.error('Error fetching news by ID:', error);
-  }
-});
+
 
 </script>
 

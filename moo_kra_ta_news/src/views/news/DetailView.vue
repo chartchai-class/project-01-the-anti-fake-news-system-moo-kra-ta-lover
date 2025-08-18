@@ -1,46 +1,30 @@
 <script setup lang="ts">
-import NewsService from '@/services/NewsService';
-import type { News } from '@/types';
+import { useNewsStore } from '@/stores/news';
 import { formatDate } from '@/utils/dateFormatter';
 import { getUserProfile } from '@/utils/userProfile';
-import { computed, onMounted, ref } from 'vue';
+import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
 import { RouterLink } from 'vue-router';
 import CommentView from './CommentView.vue';
 
-const news = ref<News | null>(null);
-const id = ref<number>(2);
-
-// const props = defineProps<{
-//   id: number;
-// }>();
-
-// console.log(props.id, "id");
+const store = useNewsStore()
+const { news } = storeToRefs(store)
 
 const userProfile = computed(() => getUserProfile(news.value?.reporter || ''));
 
-onMounted(async () => {
-  NewsService.getNewsById(id.value)
-    .then(response => {
-        news.value = response.data;
-        console.log(news.value);
-    })
-    .catch(error => {
-        console.error('Error fetching news by ID:', error);
-    });
-});
-
 </script>
 <template>
+    <div>
+    <div class="mx-auto max-w-7xl lg:px-8">
 
-    <div v-if="news">
-        <img
+        <div v-if="news">
+            <img
             v-if="news.imageUrl && news.imageUrl.length > 0"
             :src="news.imageUrl[0]"
             alt="News Image" class="w-full h-90 object-cover mx-auto my-6"
-        />
-    </div>
+            />
+        </div>
 
-    <div class="mx-auto max-w-7xl lg:px-8">
     <div v-if="news">
         <div class="my-6">
             <h1 class="font-sumana text-4xl font-bold">{{ news.topic }}</h1>
@@ -79,5 +63,7 @@ onMounted(async () => {
     </div>
       </RouterLink>
       <CommentView/>
+    </div>
+
     </div>
 </template>
