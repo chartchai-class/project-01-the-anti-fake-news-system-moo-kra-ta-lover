@@ -20,8 +20,6 @@ import LogoWeb from './LogoWeb.vue';
             <p>Fake News</p>
         </div>
       </div>
-
-      <RouterLink to="/detail">Details</RouterLink>
     </nav>
   </header>
 </template>
