@@ -35,10 +35,10 @@ function formatDate(dateStr: string): string {
 <template>
 
     <div v-if="news">
-        <img 
-        v-if="news.imageUrl && news.imageUrl.length > 0" 
-        :src="news.imageUrl[0]" 
-        alt="News Image" 
+        <img
+        v-if="news.imageUrl && news.imageUrl.length > 0"
+        :src="news.imageUrl[0]"
+        alt="News Image"
         />
 
         <h1>{{ news.topic }}</h1>
@@ -55,17 +55,17 @@ function formatDate(dateStr: string): string {
     <RouterLink to="/Vote">
     <div class="m-8">
         <button class="flex p-6 justify-between items-center w-full bg-[#F5F5F5] rounded-lg border border-gray-200 shadow-sm hover:shadow-md hover:bg-gray-50 transition-all">
-            
+
             <div class="flex-shrink-0 rounded-full p-4 bg-white">
                 <img src="@/assets/Text_logo.svg" alt="" class="w-6 h-6">
             </div>
-    
+
 
             <div class="flex-1 text-left ml-4">
                 <h3 class="font-semibold text-gray-900">Share Your Opinion With Us</h3>
                 <p class="text-sm text-gray-500 mt-1">Vote whether the news is fake or not and comment your opinion.</p>
             </div>
-    
+
 
             <div class="flex-shrink-0 ml-4">
                 <img src="@/assets/Arrow_right.svg" alt="" class="w-5 h-5">
@@ -73,7 +73,7 @@ function formatDate(dateStr: string): string {
         </button>
     </div>
     </RouterLink>
-        
+
 
     <CommentView />
 

@@ -1,7 +1,5 @@
-<script setup lang="ts">
-
-
-</script>
+<!-- <script setup lang="ts">
+</script> -->
 
 <template>
   <div class="inline-flex justify-center items-center gap-4">

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import NewsCarousel from '../components/NewsCarousel.vue';
+import NewsCarousel from '../components/home-page/NewsCarousel.vue';
 import type { News } from '@/types';
 import { ref, onMounted } from 'vue';
 import NewsService from '@/services/NewsService';
-
+import NavTab from '@/components/home-page/NavTab.vue';
 const news = ref<News[]>([]);
 
 onMounted(async () => {
@@ -15,8 +15,25 @@ onMounted(async () => {
 </script>
 
 <template>
-  <main>
-    <NewsCarousel />
-    <h1>Welcome to Moo Kra Ta News</h1>
+  <main class="flex flex-col mx-auto max-w-7xl gap-4 p-6 lg:px-8 ">
+    <div class="w-full flex flex-col items-center justify-center bg-neutral-100 rounded-lg py-6">
+       <h1 class="uppercase tracking-[3.20px] font-medium leading-loose">Welcome to Moo Kra Ta News</h1>
+        <div class="text-3xl font-semibold leading-[50px] text-center flex flex-col items-center justify-center">
+          <span>Share <span class="text-red-600">the news</span>, uncover <span class="text-red-600">the truth</span>, </span>
+          <span>and banish <span class="text-red-600">fake news</span> for good</span>
+        </div>
+    </div>
+
+    <NewsCarousel :news="news" />
+
+    <div class="divide-x-2 divide-neutral-200 flex gap-3">
+      <NavTab text="All" :isActive="true" />
+      <div class="gap-4 flex pl-3">
+        <NavTab text="Technology" :isActive="false" />
+        <NavTab text="Health" :isActive="false" />
+        <NavTab text="Business" :isActive="false" />
+      </div>
+    </div>
+
   </main>
 </template>
