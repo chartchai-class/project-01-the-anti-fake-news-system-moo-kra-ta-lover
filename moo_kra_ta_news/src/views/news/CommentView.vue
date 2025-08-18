@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import CommentItem from '@/components/CommentItem.vue';
 import { useNewsStore } from '@/stores/news';
+import { Check, TriangleAlert } from 'lucide-vue-next';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 
@@ -32,8 +33,9 @@ const fakeComments = computed(() => {
       </div>
     </div>
 
-    <div class="my-6">
-      <p class="font-inter text-xl">Real Comments ({{ realComments }})  Fake Comments ({{ fakeComments }})</p>
+    <div class="my-6 flex items-center gap-10 font-inter text-xl" >
+        <span class="flex"> <Check />  Real Comments ({{ realComments }}) </span>
+        <span class="flex"> <TriangleAlert />  Fake Comments ({{ fakeComments }})</span>
     </div>
 
     <div v-if="news && news.comments">
