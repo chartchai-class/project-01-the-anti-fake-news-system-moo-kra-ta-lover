@@ -18,15 +18,15 @@ const userProfile = computed(() => getUserProfile(props.news.reporter || ''));
         v-if="news.imageUrl && news.imageUrl.length > 0"
         :src="news.imageUrl[0]"
         alt="News Image"
-        class="w-full h-64 object-cover rounded-xl mb-2"
+        class="w-full h-72 object-cover rounded-xl mb-2"
         />
       <div class="text-neutral-600 flex items-center gap-2">
         <div :class="[userProfile.bgColor, 'rounded-full w-6 h-6 flex items-center justify-center text-white']">{{ userProfile.initials }}</div>
-        <span>{{ news.reporter }} • </span>
-        <span>{{ formatDate(news.reportDate) }}</span>
+        <span class="text-sm">{{ news.reporter }} • </span>
+        <span class="text-sm">{{ formatDate(news.reportDate) }}</span>
       </div>
-      <h2 class="font-sumana font-bold text-2xl">{{ news.topic }}</h2>
-      <span class="text-neutral-600">{{ news.shortDetail }}</span>
+      <h2 class="font-sumana font-semibold tracking-tight text-2xl">{{ news.topic }}</h2>
+      <span class="text-neutral-600 text-sm">{{ news.shortDetail }}</span>
     </div>
   <!-- </RouterLink> -->
 </template>
