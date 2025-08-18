@@ -8,7 +8,13 @@ import { RouterLink } from 'vue-router';
 import CommentView from './CommentView.vue';
 
 const news = ref<News | null>(null);
-const id = ref<number>(1);
+const id = ref<number>(2);
+
+// const props = defineProps<{
+//   id: number;
+// }>();
+
+// console.log(props.id, "id");
 
 const userProfile = computed(() => getUserProfile(news.value?.reporter || ''));
 
@@ -16,7 +22,7 @@ onMounted(async () => {
   NewsService.getNewsById(id.value)
     .then(response => {
         news.value = response.data;
-        // console.log(news.value);
+        console.log(news.value);
     })
     .catch(error => {
         console.error('Error fetching news by ID:', error);
@@ -27,9 +33,9 @@ onMounted(async () => {
 <template>
 
     <div v-if="news">
-        <img 
-            v-if="news.imageUrl && news.imageUrl.length > 0" 
-            :src="news.imageUrl[0]" 
+        <img
+            v-if="news.imageUrl && news.imageUrl.length > 0"
+            :src="news.imageUrl[0]"
             alt="News Image" class="w-full h-90 object-cover mx-auto my-6"
         />
     </div>
@@ -54,7 +60,7 @@ onMounted(async () => {
     <RouterLink to="/Vote">
     <div class="my-8">
         <button class="flex p-4 justify-between items-center w-full bg-[#F5F5F5] rounded-lg border border-gray-200 shadow-sm hover:shadow-md hover:bg-gray-50 transition-all">
-            
+
             <div class="flex-shrink-0 rounded-full p-4 bg-white">
                 <img src="@/assets/Text_logo.svg" alt="" class="w-6 h-6">
             </div>
@@ -71,12 +77,7 @@ onMounted(async () => {
             </div>
         </button>
     </div>
-    </RouterLink>
-        
-    
-    <CommentView/>
-
-
-
+      </RouterLink>
+      <CommentView/>
     </div>
 </template>

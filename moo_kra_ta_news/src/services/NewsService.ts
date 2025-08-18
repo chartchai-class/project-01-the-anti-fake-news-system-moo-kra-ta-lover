@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: 'https://my-json-server.typicode.com/Eakkasit662115058/Moo_Kra_ta_news_database',
+  baseURL: 'https://68a31457c5a31eb7bb1edde1.mockapi.io',
   withCredentials: false,
   headers: {
     Accept: 'application/json',
@@ -10,8 +10,9 @@ const apiClient = axios.create({
 });
 
 export default {
-  getNews(perPage: number, page: number) {
-    return apiClient.get('/news?_limit=' + perPage + '&_page=' + page);
+  getNews() {
+    // return apiClient.get('/news?_limit=' + perPage + '&_page=' + page);
+    return apiClient.get('/news');
   },
   getNewsById(id: number) {
     return apiClient.get(`/news/`+id);

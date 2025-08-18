@@ -12,9 +12,12 @@ const router = createRouter({
       component: HomeView,
     },
     {
-      path: '/detail',
+      path: '/:id',
       name: 'detail',
       component: DetailView,
+      props: true,
+      beforeEnter: () => {
+      }
     },
     {
       path: '/vote',

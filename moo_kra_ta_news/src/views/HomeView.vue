@@ -8,7 +8,7 @@ import NewsCard from '@/components/NewsCard.vue';
 const news = ref<News[]>([]);
 
 onMounted(async () => {
-  const response = await NewsService.getNews(4, 1);
+  const response = await NewsService.getNews();
   news.value = response.data;
   console.log(news.value);
 });
@@ -30,9 +30,8 @@ onMounted(async () => {
     <div class="divide-x-2 divide-neutral-200 flex gap-3">
       <NavTab text="All" :isActive="true" />
       <div class="gap-4 flex pl-3">
-        <NavTab text="Technology" :isActive="false" />
-        <NavTab text="Health" :isActive="false" />
-        <NavTab text="Business" :isActive="false" />
+        <NavTab text="Trusted News" :isActive="false" />
+        <NavTab text="Fake News" :isActive="false" />
       </div>
     </div>
 
