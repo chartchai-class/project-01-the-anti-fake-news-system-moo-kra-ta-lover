@@ -41,18 +41,18 @@ const userProfile = computed(() => getUserProfile(news.value?.reporter || ''));
 
     </div>
 
-    <div class="divide-x-2 divide-neutral-200 flex gap-3">
+    <div class="divide-neutral-200 flex gap-3">
         <router-link :to="{ name: 'news-comment-view' }">
             <NavTab
                 text="Comments"
-                :isActive="true"
+                :isActive="$route.name === 'news-comment-view'"
             />
         </router-link>
 
         <router-link :to="{ name: 'news-vote-view' }">
             <NavTab
                 text="Vote"
-                :isActive="true"
+                :isActive="$route.name === 'news-vote-view'"
             />
         </router-link>
     </div>
