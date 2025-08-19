@@ -71,12 +71,6 @@ const router = createRouter({
       name: 'network-error-view',
       component: NetworkErrorView,
     },
-    {
-  path: '/new/:id/vote',
-  name: 'news-vote-view',
-  component: NewsVoteView,
-  props: true,
-},
   ],
 })
 

@@ -1,9 +1,11 @@
 <script lang="ts" setup>
-import type { News, Comment } from '@/types'
-import { ref } from 'vue'
+import type { Comment } from '@/types'
+import {  computed } from 'vue'
 import { reactive } from 'vue'
+import { storeToRefs } from 'pinia';
 // const news = ref<News | null>(null)
 import { useNewsStore } from '@/stores/news.ts'
+
 
 const store = useNewsStore()
 
@@ -29,17 +31,7 @@ function addComment() {
 }
 
 
-
-const news = ref<News | null>({
-    id: 1,
-    topic: 'Example News',
-    shortDetail: 'Short detail here',
-    fullDetail: 'Full detail here',
-    reporter: 'John Doe',
-    reportDate: '2025-08-19',
-    imageUrl: [],
-    comments: []
-})
+const { news } = storeToRefs(store)
 
 // single reactive form
 const form = reactive({
@@ -50,6 +42,7 @@ const form = reactive({
     voted: false
 })
 
+const totalComments = computed(() => news.value?.comments?.length || 0)
 
 </script>
 
@@ -64,7 +57,7 @@ const form = reactive({
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8-1.526 0-2.947-.388-4.156-1.06L3 20l1.06-4.156C3.388 14.947 3 13.526 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                         </svg>
-                        <h2 class="text-lg font-bold">Comments ( {{ news.comments.length }} )</h2>
+                        <h2 class="text-lg font-bold">Comments ( {{ totalComments }} )</h2>
                     </div>
                     <!-- comment box -->
                     <form @submit.prevent="addComment" class="space-y-3 mb-6">
@@ -121,17 +114,6 @@ const form = reactive({
                             Post Comment
                         </button>
                     </form>
-
-                    <!-- comments list -->
-                    <div v-if="news.comments.length > 0" class="space-y-3">
-                        <div v-for="comment in news.comments" :key="comment.id" class="border p-3 rounded-md">
-                            <p class="font-semibold">{{ comment.user }} <span class="text-sm text-gray-500">({{
-                                comment.vote }})</span></p>
-                            <p class="mt-1">{{ comment.comment }}</p>
-                            <img v-if="comment.imageUrl.length" :src="comment.imageUrl[0]" alt="comment image"
-                                class="mt-2 rounded-md max-h-60 object-cover w-full" />
-                        </div>
-                    </div>
 
                 </div>
             </div>
