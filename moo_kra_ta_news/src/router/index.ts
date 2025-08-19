@@ -29,6 +29,9 @@ const router = createRouter({
         .then((reponse) =>{
           // need to setup data for the event
           newsStore.setNews(reponse.data)
+          if (to.matched.length === 1 || to.name === 'news-detail-view') {
+            return { name: 'news-comment-view', params: { id: id.toString() } }
+          }
         }). catch ((error) =>{
           if (error.reponse && error.reponse.status === 404){
             return {
@@ -48,7 +51,7 @@ const router = createRouter({
           props: true,
         },
         {
-          path: '',
+          path: 'vote',
           name: 'news-vote-view',
           component: NewsVoteView,
           props: true,
@@ -71,12 +74,6 @@ const router = createRouter({
       name: 'network-error-view',
       component: NetworkErrorView,
     },
-    {
-  path: '/new/:id/vote',
-  name: 'news-vote-view',
-  component: NewsVoteView,
-  props: true,
-},
   ],
 })
 

@@ -31,11 +31,17 @@ const userProfile = computed(() => getUserProfile(props.comment.user|| ''));
                     <span :class="comment.vote === 'Real' ? 'text-[#2E9B40]' : 'text-[#9B2E30]'">{{ comment.vote }}</span>
                 </div>
             </div>
-            <img 
-            v-if="comment.imageUrl && comment.imageUrl.length > 0" 
-            :src="comment.imageUrl[0]" 
-            alt="News Image" class="mt-6"
-            />
+            
+            <div v-if="comment.imageUrl && comment.imageUrl.length > 0" class="mt-6 flex flex-wrap gap-4">
+                <div 
+                    v-for="(image, index) in comment.imageUrl" :key="index" class="w-64 h-64 rounded-xl overflow-hidden items-center justify-center mb-4 flex">
+                    <img 
+                        :src="image" 
+                        :alt="`News Image ${index}`" 
+                        class="w-full h-full object-fill"
+                    />
+                </div>
+            </div>
             <div class="mt-6 font-inter text-lg">
                 {{ comment.comment }}
             </div>
