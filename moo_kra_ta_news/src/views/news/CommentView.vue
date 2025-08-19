@@ -34,8 +34,8 @@ const fakeComments = computed(() => {
     </div>
 
     <div class="my-6 flex items-center gap-10 font-inter text-xl" >
-        <span class="flex"> <Check />  Real Comments ({{ realComments }}) </span>
-        <span class="flex"> <TriangleAlert />  Fake Comments ({{ fakeComments }})</span>
+        <span class="flex gap-2"> <Check />  Real Comments ({{ realComments }}) </span>
+        <span class="flex gap-2"> <TriangleAlert />  Fake Comments ({{ fakeComments }})</span>
     </div>
 
     <div v-if="news && news.comments">
