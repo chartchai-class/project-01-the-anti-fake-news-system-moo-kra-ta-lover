@@ -108,14 +108,14 @@ const totalComments = computed(() => news.value?.comments?.length || 0)
 
                             <div class="flex gap-4 max-w-md mx-auto">
                                 <button type="button" @click="form.vote = 'Real'; form.voted = true"
-                                    :class="form.vote === 'Real' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'"
-                                    class="flex-1 py-2 rounded-md transform transition duration-200 hover:scale-105 active:scale-95 hover:shadow-md">
+                                    :class="form.vote === 'Real' ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-600'"
+                                    class="flex-1 py-2 rounded-md transform transition duration-500 hover:scale-105 active:scale-95 hover:shadow-md">
                                     Real
                                 </button>
 
                                 <button type="button" @click="form.vote = 'Fake'; form.voted = true"
-                                    :class="form.vote === 'Fake' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'"
-                                    class="flex-1 py-2 rounded-md transform transition duration-200 hover:scale-105 active:scale-95 hover:shadow-md">
+                                    :class="form.vote === 'Fake' ? 'bg-red-600 text-white' : 'bg-gray-200 text-gray-600'"
+                                    class="flex-1 py-2 rounded-md transform transition duration-500 hover:scale-105 active:scale-95 hover:shadow-md">
                                     Fake
                                 </button>
 
