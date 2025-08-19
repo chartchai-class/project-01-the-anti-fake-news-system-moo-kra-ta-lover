@@ -1,8 +1,33 @@
 <script lang="ts" setup>
-import type { News } from '@/types'
+import type { News, Comment } from '@/types'
 import { ref } from 'vue'
 import { reactive } from 'vue'
 // const news = ref<News | null>(null)
+import { useNewsStore } from '@/stores/news.ts'
+
+const store = useNewsStore()
+
+function addComment() {
+  if (!news.value) return
+
+  const newComment: Comment = {
+    id: news.value.comments.length + 1,
+    user: form.name,
+    vote: form.vote,
+    comment: form.comment,
+    imageUrl: form.imageUrl ? [form.imageUrl] : []
+  }
+
+  store.addComment(newComment)  
+  
+  // reset form
+  form.name = ''
+  form.comment = ''
+  form.vote = 'Real'
+  form.imageUrl = ''
+  form.voted = false
+}
+
 
 
 const news = ref<News | null>({
@@ -24,27 +49,6 @@ const form = reactive({
     imageUrl: '', // optional
     voted: false
 })
-
-function addComment() {
-    if (!news.value) return
-
-    const newComment: Comment = {
-        id: news.value.comments.length + 1,
-        user: form.name,
-        vote: form.vote,
-        comment: form.comment,
-        imageUrl: form.imageUrl ? [form.imageUrl] : []
-    }
-
-    news.value.comments.push(newComment)
-
-    // reset form
-    form.name = ''
-    form.comment = ''
-    form.vote = 'Real'
-    form.imageUrl = ''
-    form.voted = false
-}
 
 
 </script>
@@ -82,23 +86,17 @@ function addComment() {
 
 
                             <div class="flex gap-4 max-w-md mx-auto">
-                                <button
-  type="button"
-  @click="form.vote = 'Real'; form.voted = true"
-  :class="form.vote === 'Real' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'"
-  class="flex-1 py-2 rounded-md transform transition duration-200 hover:scale-105 active:scale-95 hover:shadow-md"
->
-  Real
-</button>
+                                <button type="button" @click="form.vote = 'Real'; form.voted = true"
+                                    :class="form.vote === 'Real' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'"
+                                    class="flex-1 py-2 rounded-md transform transition duration-200 hover:scale-105 active:scale-95 hover:shadow-md">
+                                    Real
+                                </button>
 
-<button
-  type="button"
-  @click="form.vote = 'Fake'; form.voted = true"
-  :class="form.vote === 'Fake' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'"
-  class="flex-1 py-2 rounded-md transform transition duration-200 hover:scale-105 active:scale-95 hover:shadow-md"
->
-  Fake
-</button>
+                                <button type="button" @click="form.vote = 'Fake'; form.voted = true"
+                                    :class="form.vote === 'Fake' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'"
+                                    class="flex-1 py-2 rounded-md transform transition duration-200 hover:scale-105 active:scale-95 hover:shadow-md">
+                                    Fake
+                                </button>
 
                             </div>
                         </div>
@@ -134,6 +132,7 @@ function addComment() {
                                 class="mt-2 rounded-md max-h-60 object-cover w-full" />
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
