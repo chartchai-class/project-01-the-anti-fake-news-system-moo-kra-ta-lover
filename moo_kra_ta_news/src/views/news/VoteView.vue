@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 import NewsService from '@/services/NewsService'
 import type { News } from '@/types'
 import { getUserProfile } from '@/utils/userProfile'
+import CommentScetion from '@/components/CommentScetion.vue'
 
 const route = useRoute()
 const id = computed(() => Number(route.params.id))
@@ -29,7 +30,6 @@ const newsVote = computed(() => {
   const fakeCount = news.value.comments.filter(c => c.vote === 'Fake').length
   return realCount >= fakeCount ? 'Real' : 'Fake'
 })
-
 
 </script>
 
@@ -86,10 +86,10 @@ const newsVote = computed(() => {
 
         </div>
 
-        <!--  -->
-        <div>
-          
-        </div>
+        <!-- comments -->
+        <CommentScetion
+        
+      />
       </div>
 
     </div>
