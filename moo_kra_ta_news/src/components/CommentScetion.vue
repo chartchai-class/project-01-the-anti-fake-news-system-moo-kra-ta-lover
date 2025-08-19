@@ -21,7 +21,8 @@ const form = reactive({
     name: '',
     comment: '',
     vote: 'Real' as 'Real' | 'Fake', // optional if you want vote
-    imageUrl: '' // optional
+    imageUrl: '', // optional
+    voted: false
 })
 
 function addComment() {
@@ -42,6 +43,7 @@ function addComment() {
     form.comment = ''
     form.vote = 'Real'
     form.imageUrl = ''
+    form.voted = false
 }
 
 
@@ -70,35 +72,36 @@ function addComment() {
                         </div>
                         <!-- Vote -->
                         <div>
-  <div class="text-center mb-4">
-    <h2 class="text-2xl font-bold mb-2">What do you think?</h2>
-    <p class="text-muted-foreground">
-      Vote to help verify this news article
-    </p>
-  </div>
+                            <div class="text-center mb-4">
+                                <h2 class="text-2xl font-bold mb-2">What do you think?</h2>
+                                <p class="text-muted-foreground">
+                                    {{ form.voted ? "Thank you for your vote!" : "Vote to help verify this news article"
+                                    }}
+                                </p>
+                            </div>
 
-  <div class="flex gap-4 max-w-md mx-auto">
-    <button
-      @click="form.vote = 'Real'"
-      :class="form.vote === 'Real'
-        ? 'bg-blue-600 text-white'
-        : 'bg-gray-200 text-gray-600'"
-      class="flex-1 py-2 rounded-md transform transition duration-200 hover:scale-105"
-    >
-      Real
-    </button>
 
-    <button
-      @click="form.vote = 'Fake'"
-      :class="form.vote === 'Fake'
-        ? 'bg-blue-600 text-white'
-        : 'bg-gray-200 text-gray-600'"
-      class="flex-1 py-2 rounded-md transform transition duration-200 hover:scale-105"
-    >
-      Fake
-    </button>
-  </div>
-</div>
+                            <div class="flex gap-4 max-w-md mx-auto">
+                                <button
+  type="button"
+  @click="form.vote = 'Real'; form.voted = true"
+  :class="form.vote === 'Real' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'"
+  class="flex-1 py-2 rounded-md transform transition duration-200 hover:scale-105 active:scale-95 hover:shadow-md"
+>
+  Real
+</button>
+
+<button
+  type="button"
+  @click="form.vote = 'Fake'; form.voted = true"
+  :class="form.vote === 'Fake' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600'"
+  class="flex-1 py-2 rounded-md transform transition duration-200 hover:scale-105 active:scale-95 hover:shadow-md"
+>
+  Fake
+</button>
+
+                            </div>
+                        </div>
 
 
                         <!-- Comment -->
@@ -125,13 +128,12 @@ function addComment() {
                     <div v-if="news.comments.length > 0" class="space-y-3">
                         <div v-for="comment in news.comments" :key="comment.id" class="border p-3 rounded-md">
                             <p class="font-semibold">{{ comment.user }} <span class="text-sm text-gray-500">({{
-                                    comment.vote }})</span></p>
+                                comment.vote }})</span></p>
                             <p class="mt-1">{{ comment.comment }}</p>
                             <img v-if="comment.imageUrl.length" :src="comment.imageUrl[0]" alt="comment image"
                                 class="mt-2 rounded-md max-h-60 object-cover w-full" />
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
