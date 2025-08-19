@@ -10,6 +10,7 @@ import { RouterLink } from 'vue-router';
 const store = useNewsStore()
 const { news } = storeToRefs(store)
 
+
 const userProfile = computed(() => getUserProfile(news.value?.reporter || ''));
 
 </script>
