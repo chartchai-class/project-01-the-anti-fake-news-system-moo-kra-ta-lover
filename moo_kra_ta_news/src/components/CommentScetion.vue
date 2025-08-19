@@ -1,33 +1,58 @@
 <script lang="ts" setup>
 import type { Comment } from '@/types'
-import {  computed } from 'vue'
+import { ref, computed } from 'vue'
 import { reactive } from 'vue'
 import { storeToRefs } from 'pinia';
 // const news = ref<News | null>(null)
 import { useNewsStore } from '@/stores/news.ts'
 
-
+const alertMessage = ref('')
 const store = useNewsStore()
 
+function showAlert(message: string) {
+    alertMessage.value = message
+
+    // disappear after 3 seconds
+    setTimeout(() => {
+        alertMessage.value = ''
+    }, 3000)
+}
+
+
 function addComment() {
-  if (!news.value) return
+    if (!news.value) return
 
-  const newComment: Comment = {
-    id: news.value.comments.length + 1,
-    user: form.name,
-    vote: form.vote,
-    comment: form.comment,
-    imageUrl: form.imageUrl ? [form.imageUrl] : []
-  }
+    if (!form.name.trim()) {
+        showAlert("⚠️ Please enter your name.")
+        return
+    }
 
-  store.addComment(newComment)  
-  
-  // reset form
-  form.name = ''
-  form.comment = ''
-  form.vote = 'Real'
-  form.imageUrl = ''
-  form.voted = false
+    if (!form.vote) {
+        showAlert("⚠️ Please select Real or Fake.")
+        return
+    }
+
+    if (!form.comment.trim()) {
+        showAlert("⚠️ Please write a comment.")
+        return
+    }
+
+    const newComment: Comment = {
+        id: news.value.comments.length + 1,
+        user: form.name,
+        vote: form.vote,
+        comment: form.comment,
+        imageUrl: form.imageUrl ? [form.imageUrl] : []
+    }
+
+    store.addComment(newComment)
+
+    // reset form
+    form.name = ''
+    form.comment = ''
+    form.vote = 'Real'
+    form.imageUrl = ''
+    form.voted = false
 }
 
 
@@ -48,6 +73,9 @@ const totalComments = computed(() => news.value?.comments?.length || 0)
 
 <template>
     <div>
+        <div v-if="alertMessage" class="mb-4 p-3 rounded-lg bg-red-100 border border-red-300 text-red-700 font-medium">
+            {{ alertMessage }}
+        </div>
         <div v-if="news">
             <div class="shadow-card hover:shadow-news transition-all duration-300">
                 <div class="mx-auto p-6 bg-white rounded-2xl shadow-md border border-gray-200">
