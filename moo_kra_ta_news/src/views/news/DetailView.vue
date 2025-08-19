@@ -1,11 +1,11 @@
 <script setup lang="ts">
+import NavTab from '@/components/home-page/NavTab.vue';
 import { useNewsStore } from '@/stores/news';
 import { formatDate } from '@/utils/dateFormatter';
 import { getUserProfile } from '@/utils/userProfile';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 import { RouterLink } from 'vue-router';
-import CommentView from './CommentView.vue';
 
 const store = useNewsStore()
 const { news } = storeToRefs(store)
@@ -15,7 +15,7 @@ const userProfile = computed(() => getUserProfile(news.value?.reporter || ''));
 
 </script>
 <template>
-    <div>
+    <div v-if="news">
     <div class="mx-auto max-w-7xl lg:px-8">
 
         <div v-if="news">
@@ -42,29 +42,24 @@ const userProfile = computed(() => getUserProfile(news.value?.reporter || ''));
 
     </div>
 
-    <RouterLink :to="{ name: 'news-vote-view', params: { id: news?.id } }">
-    <div class="my-8">
-        <button class="flex p-4 justify-between items-center w-full bg-[#F5F5F5] rounded-lg border border-gray-200 shadow-sm hover:shadow-md hover:bg-gray-50 transition-all">
+    <div class="divide-neutral-200 flex gap-3">
+        <router-link :to="{ name: 'news-comment-view' }">
+            <NavTab
+                text="Comments"
+                :isActive="$route.name === 'news-comment-view'"
+            />
+        </router-link>
 
-            <div class="flex-shrink-0 rounded-full p-4 bg-white">
-                <img src="@/assets/Text_logo.svg" alt="" class="w-6 h-6">
-            </div>
-
-
-            <div class="flex-1 text-left ml-4">
-                <h3 class="font-semibold text-gray-900 font-inter text-lg">Share Your Opinion With Us</h3>
-                <p class="text-base text-gray-500 mt-1 font-inter">Vote whether the news is fake or not and comment your opinion.</p>
-            </div>
-
-
-            <div class="flex-shrink-0 ml-4">
-                <img src="@/assets/Arrow_right.svg" alt="" class="w-5 h-5">
-            </div>
-        </button>
+        <router-link :to="{ name: 'news-vote-view' }">
+            <NavTab
+                text="Vote"
+                :isActive="$route.name === 'news-vote-view'"
+            />
+        </router-link>
     </div>
-      </RouterLink>
-      <CommentView/>
-    </div>
+    
+     <router-view />
 
+    </div>
     </div>
 </template>

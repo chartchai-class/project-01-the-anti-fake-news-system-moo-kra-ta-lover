@@ -85,11 +85,9 @@ const newsVote = computed(() => {
           </div>
 
         </div>
-
-        <!-- comments -->
-        <CommentScetion
         
-      />
+        <!-- comments -->
+        <CommentScetion />
       </div>
 
     </div>
