@@ -1,6 +1,7 @@
 import NewsService from '@/services/NewsService'
 import { useNewsStore } from '@/stores/news'
 import NetworkErrorView from '@/views/NetworkErrorView.vue'
+import NewsCommentView from '@/views/news/CommentView.vue'
 import NewsDetailView from '@/views/news/DetailView.vue'
 import NewsVoteView from '@/views/news/VoteView.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
@@ -42,10 +43,16 @@ const router = createRouter({
       children: [
         {
           path: '',
+          name: 'news-comment-view',
+          component: NewsCommentView,
+          props: true,
+        },
+        {
+          path: '',
           name: 'news-vote-view',
           component: NewsVoteView,
           props: true,
-        },
+        }
       ],
     },
     {
