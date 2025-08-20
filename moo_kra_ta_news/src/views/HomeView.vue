@@ -1,11 +1,12 @@
 <!-- HomePage.vue -->
 <script setup lang="ts">
 import NewsCarousel from '../components/home-page/NewsCarousel.vue';
-import { onMounted, computed, ref } from 'vue';
+import { onMounted, computed, ref, watch } from 'vue';
 import NewsService from '@/services/NewsService';
 import NavTab from '@/components/home-page/NavTab.vue';
 import NewsCard from '@/components/NewsCard.vue';
 import { useNewsFilterStore, type FilterType } from '@/stores/newsFilter';
+import { onUnmounted } from 'vue';
 
 // Use the store
 const newsFilterStore = useNewsFilterStore();
@@ -20,6 +21,8 @@ onMounted(async () => {
   const response = await NewsService.getNews();
   newsFilterStore.setNews(response.data);
   console.log('News loaded:', response.data);
+
+  document.addEventListener('click', handleClickOutside);
 });
 
 // Handle tab clicks
@@ -42,24 +45,56 @@ const sectionTitle = computed(() => {
 
 // Pagination logic
 const currentPage = ref(1);
-const itemsPerPage = 4;
+const itemsPerPage = ref(4);
+const pageSizes = [4, 8, 12, 16, 20];
 
 // Computed properties from store
 const paginatedNews = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage;
-  const end = start + itemsPerPage;
+  const start = (currentPage.value - 1) * itemsPerPage.value;
+  const end = start + itemsPerPage.value;
   return newsFilterStore.filteredNews.slice(start, end);
 });
 
 // Computed property for the total number of pages
 const totalPages = computed(() => {
-  return Math.ceil(newsFilterStore.filteredNews.length / itemsPerPage);
+  return Math.ceil(newsFilterStore.filteredNews.length / itemsPerPage.value);
 });
 
 const changePage = (page: number) => {
   if (page >= 1 && page <= totalPages.value) {
     currentPage.value = page;
   }
+};
+
+// Watch for changes in itemsPerPage and reset currentPage
+watch(itemsPerPage, () => {
+  currentPage.value = 1;
+});
+
+const isDropdownOpen = ref(false);
+
+// Watch for clicks outside the dropdown to close it
+function handleClickOutside(event: MouseEvent) {
+  const dropdownElement = document.getElementById('items-per-page-dropdown');
+  const dropdownButton = document.getElementById('dropdown-button');
+  
+  if (dropdownElement && dropdownButton && !dropdownElement.contains(event.target as Node) && !dropdownButton.contains(event.target as Node)) {
+    isDropdownOpen.value = false;
+  }
+}
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside);
+});
+
+const selectPageSize = (size: number) => {
+  itemsPerPage.value = size;
+  isDropdownOpen.value = false; // Close the dropdown after selection
+};
+
+// Toggle dropdown visibility
+const toggleDropdown = () => {
+  isDropdownOpen.value = !isDropdownOpen.value;
 };
 
 </script>
@@ -105,37 +140,70 @@ const changePage = (page: number) => {
       <NewsCard v-for="newsItem in paginatedNews" :key="newsItem.id" :news="newsItem" />
     </div>
 
-    <div v-if="totalPages > 1 || totalPages === 1 " class="flex justify-center items-center gap-2 mt-4">
-      <button
-        @click="changePage(currentPage - 1)"
-        :disabled="currentPage === 1"
-        class="px-4 py-2 rounded-md transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-        :class="{ 'bg-neutral-200 hover:bg-neutral-300': currentPage !== 1 }"
-      >
-        Previous
-      </button>
-      <div class="flex gap-2">
+    <div v-if="totalPages > 1 ||totalPages === 1 || totalPages === 20 " class="flex items-center justify-center gap-4 mt-4">
+      <div class="relative inline-block text-left">
         <button
-          v-for="page in totalPages"
-          :key="page"
-          @click="changePage(page)"
-          class="px-4 py-2 rounded-md transition-colors duration-300"
-          :class="{
-            'bg-red-600 text-white hover:bg-red-700': currentPage === page,
-            'bg-neutral-200 hover:bg-neutral-300': currentPage !== page
-          }"
+          id="dropdown-button"
+          @click="toggleDropdown"
+          class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-red-500"
+          type="button"
         >
-          {{ page }}
+          Show {{ itemsPerPage }} per page
+          <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+          </svg>
+        </button>
+        <div
+          v-if="isDropdownOpen"
+          id="items-per-page-dropdown"
+          class="absolute left-0 mt-2 w-40 origin-top-right rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10"
+        >
+          <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="dropdown-button">
+            <a
+              v-for="size in pageSizes"
+              :key="size"
+              @click="selectPageSize(size)"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
+              role="menuitem"
+            >
+              {{ size }} per page
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button
+          @click="changePage(currentPage - 1)"
+          :disabled="currentPage === 1"
+          class="px-4 py-2 rounded-md transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          :class="{ 'bg-neutral-200 hover:bg-neutral-300': currentPage !== 1 }"
+        >
+          Previous
+        </button>
+        <div class="flex gap-2">
+          <button
+            v-for="page in totalPages"
+            :key="page"
+            @click="changePage(page)"
+            class="px-4 py-2 rounded-md transition-colors duration-300"
+            :class="{
+              'bg-red-600 text-white hover:bg-red-700': currentPage === page,
+              'bg-neutral-200 hover:bg-neutral-300': currentPage !== page
+            }"
+          >
+            {{ page }}
+          </button>
+        </div>
+        <button
+          @click="changePage(currentPage + 1)"
+          :disabled="currentPage === totalPages"
+          class="px-4 py-2 rounded-md transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          :class="{ 'bg-neutral-200 hover:bg-neutral-300': currentPage !== totalPages }"
+        >
+          Next
         </button>
       </div>
-      <button
-        @click="changePage(currentPage + 1)"
-        :disabled="currentPage === totalPages"
-        class="px-4 py-2 rounded-md transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-        :class="{ 'bg-neutral-200 hover:bg-neutral-300': currentPage !== totalPages }"
-      >
-        Next
-      </button>
     </div>
 
     <!-- Empty state -->
