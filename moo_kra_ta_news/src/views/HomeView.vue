@@ -77,7 +77,7 @@ const isDropdownOpen = ref(false);
 function handleClickOutside(event: MouseEvent) {
   const dropdownElement = document.getElementById('items-per-page-dropdown');
   const dropdownButton = document.getElementById('dropdown-button');
-  
+
   if (dropdownElement && dropdownButton && !dropdownElement.contains(event.target as Node) && !dropdownButton.contains(event.target as Node)) {
     isDropdownOpen.value = false;
   }
@@ -104,7 +104,8 @@ const toggleDropdown = () => {
     <div class="w-full flex flex-col items-center justify-center bg-neutral-100 rounded-lg py-6">
       <h1 class="uppercase tracking-[3.20px] font-medium leading-loose">Welcome to Moo Kra Ta News</h1>
       <div class="text-3xl font-semibold leading-[50px] text-center flex flex-col items-center justify-center">
-        <span>Share <span class="text-red-600">the news</span>, uncover <span class="text-red-600">the truth</span>, </span>
+        <span>Share <span class="text-red-600">the news</span>, uncover <span class="text-red-600">the truth</span>,
+        </span>
         <span>and banish <span class="text-red-600">fake news</span> for good</span>
       </div>
     </div>
@@ -112,22 +113,10 @@ const toggleDropdown = () => {
     <NewsCarousel :news="newsFilterStore.allNews" />
 
     <div class="divide-x-2 divide-neutral-200 flex gap-3">
-      <NavTab
-        text="All"
-        :isActive="activeFilter === 'all'"
-        @click="handleTabClick('all')"
-      />
+      <NavTab text="All" :isActive="activeFilter === 'all'" @click="handleTabClick('all')" />
       <div class="gap-4 flex pl-3">
-        <NavTab
-          text="Trusted News"
-          :isActive="activeFilter === 'trusted'"
-          @click="handleTabClick('trusted')"
-        />
-        <NavTab
-          text="Fake News"
-          :isActive="activeFilter === 'fake'"
-          @click="handleTabClick('fake')"
-        />
+        <NavTab text="Trusted News" :isActive="activeFilter === 'trusted'" @click="handleTabClick('trusted')" />
+        <NavTab text="Fake News" :isActive="activeFilter === 'fake'" @click="handleTabClick('fake')" />
       </div>
     </div>
 
@@ -135,72 +124,57 @@ const toggleDropdown = () => {
       <h1 class="text-2xl font-semibold">{{ sectionTitle }}</h1>
     </div>
 
-    <!-- Pagination controls -->
-     <div v-if="paginatedNews.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 w-full">
+    <div v-if="paginatedNews.length > 0"
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 w-full">
       <NewsCard v-for="newsItem in paginatedNews" :key="newsItem.id" :news="newsItem" />
     </div>
 
-    <div v-if="totalPages > 1 ||totalPages === 1 || totalPages === 20 " class="flex items-center justify-center gap-4 mt-4">
+    <!-- Dropdown for items per page -->
+    <div v-if="totalPages > 1 || totalPages === 1 || totalPages === 20"
+      class="flex items-center justify-between gap-4 mt-4">
       <div class="relative inline-block text-left">
-        <button
-          id="dropdown-button"
-          @click="toggleDropdown"
+        <button id="dropdown-button" @click="toggleDropdown"
           class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-red-500"
-          type="button"
-        >
+          type="button">
           Show {{ itemsPerPage }} per page
-          <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+          <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+            aria-hidden="true">
+            <path fill-rule="evenodd"
+              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+              clip-rule="evenodd" />
           </svg>
         </button>
-        <div
-          v-if="isDropdownOpen"
-          id="items-per-page-dropdown"
-          class="absolute left-0 mt-2 w-40 origin-top-right rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10"
-        >
+        <div v-if="isDropdownOpen" id="items-per-page-dropdown"
+          class="absolute left-0 mt-2 w-40 origin-top-right rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
           <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="dropdown-button">
-            <a
-              v-for="size in pageSizes"
-              :key="size"
-              @click="selectPageSize(size)"
+            <a v-for="size in pageSizes" :key="size" @click="selectPageSize(size)"
               class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
-              role="menuitem"
-            >
+              role="menuitem">
               {{ size }} per page
             </a>
           </div>
         </div>
       </div>
 
+      <!-- Pagination controls -->
       <div class="flex items-center gap-2">
-        <button
-          @click="changePage(currentPage - 1)"
-          :disabled="currentPage === 1"
+        <button @click="changePage(currentPage - 1)" :disabled="currentPage === 1"
           class="px-4 py-2 rounded-md transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-          :class="{ 'bg-neutral-200 hover:bg-neutral-300': currentPage !== 1 }"
-        >
+          :class="{ 'bg-neutral-200 hover:bg-neutral-300': currentPage !== 1 }">
           Previous
         </button>
         <div class="flex gap-2">
-          <button
-            v-for="page in totalPages"
-            :key="page"
-            @click="changePage(page)"
-            class="px-4 py-2 rounded-md transition-colors duration-300"
-            :class="{
+          <button v-for="page in totalPages" :key="page" @click="changePage(page)"
+            class="px-4 py-2 rounded-md transition-colors duration-300" :class="{
               'bg-red-600 text-white hover:bg-red-700': currentPage === page,
               'bg-neutral-200 hover:bg-neutral-300': currentPage !== page
-            }"
-          >
+            }">
             {{ page }}
           </button>
         </div>
-        <button
-          @click="changePage(currentPage + 1)"
-          :disabled="currentPage === totalPages"
+        <button @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages"
           class="px-4 py-2 rounded-md transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-          :class="{ 'bg-neutral-200 hover:bg-neutral-300': currentPage !== totalPages }"
-        >
+          :class="{ 'bg-neutral-200 hover:bg-neutral-300': currentPage !== totalPages }">
           Next
         </button>
       </div>
@@ -209,7 +183,8 @@ const toggleDropdown = () => {
     <!-- Empty state -->
     <div v-else class="flex flex-col items-center justify-center py-12 text-neutral-500">
       <svg class="w-16 h-16 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
       </svg>
       <p class="text-lg font-medium">No {{ activeFilter === 'all' ? '' : activeFilter }} news found</p>
       <p class="text-sm mt-1">Try selecting a different filter</p>
