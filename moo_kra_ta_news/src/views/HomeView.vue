@@ -1,7 +1,7 @@
 <!-- HomePage.vue -->
 <script setup lang="ts">
 import NewsCarousel from '../components/home-page/NewsCarousel.vue';
-import { onMounted, computed } from 'vue';
+import { onMounted, computed, ref } from 'vue';
 import NewsService from '@/services/NewsService';
 import NavTab from '@/components/home-page/NavTab.vue';
 import NewsCard from '@/components/NewsCard.vue';
@@ -11,7 +11,7 @@ import { useNewsFilterStore, type FilterType } from '@/stores/newsFilter';
 const newsFilterStore = useNewsFilterStore();
 
 // Computed properties from store
-const filteredNews = computed(() => newsFilterStore.filteredNews);
+//const filteredNews = computed(() => newsFilterStore.filteredNews);
 const activeFilter = computed(() => newsFilterStore.activeFilter);
 // const newsCount = computed(() => newsFilterStore.newsCount);
 
@@ -25,6 +25,7 @@ onMounted(async () => {
 // Handle tab clicks
 const handleTabClick = (filter: FilterType) => {
   newsFilterStore.setFilter(filter);
+  currentPage.value = 1;
 };
 
 // Get the title based on active filter
@@ -38,6 +39,29 @@ const sectionTitle = computed(() => {
       return 'All News';
   }
 });
+
+// Pagination logic
+const currentPage = ref(1);
+const itemsPerPage = 4;
+
+// Computed properties from store
+const paginatedNews = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  return newsFilterStore.filteredNews.slice(start, end);
+});
+
+// Computed property for the total number of pages
+const totalPages = computed(() => {
+  return Math.ceil(newsFilterStore.filteredNews.length / itemsPerPage);
+});
+
+const changePage = (page: number) => {
+  if (page >= 1 && page <= totalPages.value) {
+    currentPage.value = page;
+  }
+};
+
 </script>
 
 <template>
@@ -76,9 +100,42 @@ const sectionTitle = computed(() => {
       <h1 class="text-2xl font-semibold">{{ sectionTitle }}</h1>
     </div>
 
-    <!-- Show filtered news -->
-    <div v-if="filteredNews.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 w-full">
-      <NewsCard v-for="newsItem in filteredNews" :key="newsItem.id" :news="newsItem" />
+    <!-- Pagination controls -->
+     <div v-if="paginatedNews.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 w-full">
+      <NewsCard v-for="newsItem in paginatedNews" :key="newsItem.id" :news="newsItem" />
+    </div>
+
+    <div v-if="totalPages > 1 || totalPages === 1 " class="flex justify-center items-center gap-2 mt-4">
+      <button
+        @click="changePage(currentPage - 1)"
+        :disabled="currentPage === 1"
+        class="px-4 py-2 rounded-md transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+        :class="{ 'bg-neutral-200 hover:bg-neutral-300': currentPage !== 1 }"
+      >
+        Previous
+      </button>
+      <div class="flex gap-2">
+        <button
+          v-for="page in totalPages"
+          :key="page"
+          @click="changePage(page)"
+          class="px-4 py-2 rounded-md transition-colors duration-300"
+          :class="{
+            'bg-red-600 text-white hover:bg-red-700': currentPage === page,
+            'bg-neutral-200 hover:bg-neutral-300': currentPage !== page
+          }"
+        >
+          {{ page }}
+        </button>
+      </div>
+      <button
+        @click="changePage(currentPage + 1)"
+        :disabled="currentPage === totalPages"
+        class="px-4 py-2 rounded-md transition-colors duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+        :class="{ 'bg-neutral-200 hover:bg-neutral-300': currentPage !== totalPages }"
+      >
+        Next
+      </button>
     </div>
 
     <!-- Empty state -->
