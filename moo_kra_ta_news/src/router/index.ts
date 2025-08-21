@@ -5,9 +5,9 @@ import NewsCommentView from '@/views/news/CommentView.vue'
 import NewsDetailView from '@/views/news/DetailView.vue'
 import NewsVoteView from '@/views/news/VoteView.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
+import nProgress from 'nprogress'
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import nProgress from 'nprogress'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

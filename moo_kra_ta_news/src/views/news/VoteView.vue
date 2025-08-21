@@ -1,26 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, watchEffect } from 'vue'
-import { useRoute } from 'vue-router'
-import NewsService from '@/services/NewsService'
-import type { News } from '@/types'
-import CommentScetion from '@/components/CommentScetion.vue'
-
-const route = useRoute()
-const id = computed(() => Number(route.params.id))
-const news = ref<News | null>(null)
-
-watchEffect(() => {
-  if (id.value) {
-    NewsService.getNewsById(id.value)
-      .then(response => {
-        news.value = response.data
-      })
-      .catch(error => {
-        console.error('Error fetching news:', error)
-      })
-  }
-})
-
+import CommentScetion from '@/components/CommentScetion.vue';
 </script>
 
 <template>
