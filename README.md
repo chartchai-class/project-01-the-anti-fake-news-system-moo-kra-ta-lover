@@ -9,6 +9,11 @@ A News Website for people to share their opinion on whether the news is fake or 
 - xiaoyoufung Xiaoyou Fung 652115059 </br>
 - Eakkasit662115058 Eakkasit Nimanussornkul 662115058 
 
+### Video URL
+-https://drive.google.com/file/d/1XcbmzOceNU45R68RxovesSehFhZolr_m/view?usp=sharing
+
+### Deployed Website
+-[https://project-01-the-ant-git-8df9a3-eakkasit-nimanussornkuls-projects.vercel.app?_vercel_share=GFdcX8Qnatnw5oiBi9h7ZFDdRWfLjtQH](https://project-01-the-ant-git-8df9a3-eakkasit-nimanussornkuls-projects.vercel.app?_vercel_share=GFdcX8Qnatnw5oiBi9h7ZFDdRWfLjtQH)
 ----
 
 # Guideline
