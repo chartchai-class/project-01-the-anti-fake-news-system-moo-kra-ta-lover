@@ -47,11 +47,11 @@ watch(itemsPerPage, () => {
 
 <template>
   <div>
-    <div class="my-6 flex items-center justify-between">
-      <div class="gap-5 flex items-center">
-        <span class="font-inter text-2xl">Comment</span> 
-        <div class="h-6 w-8 rounded-full bg-[#F5F5F5] flex items-center justify-center">
-          <span class="text-base font-inter">{{ totalComments }}</span>
+    <div class="my-3 sm:my-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <div class="gap-3 sm:gap-5 flex items-center">
+        <span class="font-inter text-xl sm:text-2xl">Comment</span> 
+        <div class="h-5 w-7 sm:h-6 sm:w-8 rounded-full bg-[#F5F5F5] flex items-center justify-center">
+          <span class="text-sm sm:text-base font-inter">{{ totalComments }}</span>
         </div>
       </div>
 
@@ -61,9 +61,20 @@ watch(itemsPerPage, () => {
         @update:items-per-page="handleItemsPerPageChange"/>
     </div>
 
-    <div class="my-6 flex items-center gap-10 font-inter text-xl" >
-        <span class="flex gap-2"> <Check />  Real Comments ({{ realComments }}) </span>
-        <span class="flex gap-2"> <TriangleAlert />  Fake Comments ({{ fakeComments }})</span>
+    <div class="my-3 sm:my-6 flex flex-row flex-wrap items-center gap-3 sm:gap-10 font-inter text-base sm:text-xl mt-5">
+      <span class="flex gap-2 items-center"> 
+        <div class="w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">
+          <Check />
+        </div>
+        Real Comments ({{ realComments }}) 
+      </span>
+
+      <span class="flex gap-2 items-center"> 
+        <div class="w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">
+          <TriangleAlert />
+        </div>
+        Fake Comments ({{ fakeComments }})
+      </span>
     </div>
 
     <div v-if="news && news.comments">
