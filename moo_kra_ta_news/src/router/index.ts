@@ -76,6 +76,14 @@ const router = createRouter({
       component: NetworkErrorView,
     },
   ],
+  scrollBehavior(to, from, savedPosition) {
+    // If using browser back/forward, restore old position
+    if (savedPosition) {
+      return savedPosition
+    }
+    // Otherwise always scroll to top
+    return { top: 0 }
+  }
 })
 router.beforeEach(() => {
   nProgress.start()
