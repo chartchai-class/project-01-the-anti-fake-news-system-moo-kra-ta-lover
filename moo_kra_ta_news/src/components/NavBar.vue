@@ -5,9 +5,9 @@ import LogoWeb from './LogoWeb.vue';
 
 <template>
   <header>
-    <nav class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
+    <nav class="mx-auto flex max-w-7xl items-center justify-center md:justify-between p-6 lg:px-8">
 
-      <div class="flex items-center gap-5">
+      <div class="flex items-center flex-col md:flex-row gap-5">
         <RouterLink to="/">
           <LogoWeb />
         </RouterLink>

@@ -122,11 +122,13 @@ const toggleDropdown = () => {
 
     <div class="flex md:flex-row flex-col items-start md:items-center justify-between gap-2">
       <h1 class="text-2xl text-left font-semibold">{{ sectionTitle }}</h1>
-      <div v-if="newsFilterStore.filteredNews.length > 0" class="flex items-center gap-3">
+
+      <!-- Home Page Pagination -->
+      <div v-if="newsFilterStore.filteredNews.length > 0" class="flex flex-col w-full md:w-auto md:flex-row items-center gap-3">
         <!-- Items per page dropdown -->
-        <div class="relative inline-block text-left">
+        <div class="relative inline-block text-left w-full">
           <button id="dropdown-button" @click="toggleDropdown"
-            class="inline-flex items-center justify-between min-w-[12rem] px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-red-500"
+            class="inline-flex items-center justify-between w-full md:min-w-[12rem] px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-red-500"
             type="button">
             <span>Show {{ itemsPerPage }} per page</span>
             <svg class="-mr-1 ml-2 h-5 w-5 transition-transform duration-200" :class="{ 'rotate-180': isDropdownOpen }" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
@@ -137,7 +139,7 @@ const toggleDropdown = () => {
             </svg>
           </button>
           <div v-if="isDropdownOpen" id="items-per-page-dropdown"
-            class="absolute right-0 mt-2 w-56 origin-top-right rounded-lg shadow-xl bg-white border border-gray-200 ring-1 ring-black ring-opacity-5 focus:outline-none z-50 max-h-56 overflow-auto p-1">
+            class="absolute right-0 mt-2 w-full origin-top-right rounded-lg shadow-xl bg-white border border-gray-200 ring-1 ring-black ring-opacity-5 focus:outline-none z-50 max-h-56 overflow-auto p-1">
             <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="dropdown-button">
               <button v-for="size in pageSizes" :key="size" type="button" @click.stop="selectPageSize(size)"
                 :class="[
