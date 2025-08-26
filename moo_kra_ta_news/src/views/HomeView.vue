@@ -103,7 +103,7 @@ const toggleDropdown = () => {
   <main class="flex flex-col mx-auto max-w-7xl gap-6 p-6 lg:px-8">
     <div class="w-full flex flex-col items-center justify-center bg-neutral-100 rounded-lg py-6">
       <h1 class="uppercase tracking-[3.20px] font-medium leading-loose">Welcome to Moo Kra Ta News</h1>
-      <div class="text-3xl font-semibold leading-[50px] text-center flex flex-col items-center justify-center">
+      <div class="text-2xl md:text-3xl font-semibold leading-[50px] text-center flex flex-col items-center justify-center">
         <span>Share <span class="text-red-600">the news</span>, uncover <span class="text-red-600">the truth</span>,
         </span>
         <span>and banish <span class="text-red-600">fake news</span> for good</span>
@@ -120,8 +120,8 @@ const toggleDropdown = () => {
       </div>
     </div>
 
-    <div class="flex items-center justify-between">
-      <h1 class="text-2xl font-semibold">{{ sectionTitle }}</h1>
+    <div class="flex md:flex-row flex-col items-start md:items-center justify-between gap-2">
+      <h1 class="text-2xl text-left font-semibold">{{ sectionTitle }}</h1>
       <div v-if="newsFilterStore.filteredNews.length > 0" class="flex items-center gap-3">
         <!-- Items per page dropdown -->
         <div class="relative inline-block text-left">
@@ -184,7 +184,7 @@ const toggleDropdown = () => {
       <NewsCard v-for="newsItem in paginatedNews" :key="newsItem.id" :news="newsItem" />
     </div>
 
-    
+
 
     <!-- Empty state -->
     <div v-else class="flex flex-col items-center justify-center py-12 text-neutral-500">

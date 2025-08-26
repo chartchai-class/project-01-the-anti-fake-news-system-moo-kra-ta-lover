@@ -12,7 +12,7 @@ import LogoWeb from './LogoWeb.vue';
           <LogoWeb />
         </RouterLink>
 
-        <p>|</p>
+        <p class="hidden md:block">|</p>
 
         <div class="flex gap-6">
             <p>News</p>
