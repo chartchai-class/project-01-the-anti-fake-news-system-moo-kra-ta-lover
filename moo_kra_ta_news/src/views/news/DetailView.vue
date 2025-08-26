@@ -16,34 +16,34 @@ const userProfile = computed(() => getUserProfile(news.value?.reporter || ''));
 </script>
 <template>
     <div v-if="news">
-    <div class="mx-auto max-w-7xl lg:px-8">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 sm:lg:px-8">
 
         <div v-if="news">
             <img
             v-if="news.imageUrl && news.imageUrl.length > 0"
             :src="news.imageUrl[0]"
-            alt="News Image" class="w-full h-90 object-cover mx-auto my-6"
+            alt="News Image" class="w-full h-48 sm:h-full sm:max-h-90 object-cover mx-auto my-3 sm:my-6"
             />
         </div>
 
         <div v-if="news">
-            <div class="my-6">
-                <h1 class="font-sumana text-4xl font-bold">{{ news.topic }}</h1>
+            <div class="my-3 sm:my-6">
+                <h1 class="font-sumana text-2xl sm:text-4xl font-bold">{{ news.topic }}</h1>
             </div>
 
             <div class="flex items-center gap-2">
-                <div :class="[userProfile.bgColor, 'rounded-full w-10 h-10 flex items-center justify-center text-3xl text-white']">{{ userProfile.initials }}</div>
-                <span>{{ news.reporter }} • {{ formatDate(news.reportDate) }}</span>
+                <div :class="[userProfile.bgColor, 'rounded-full w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-xl sm:text-3xl text-white']">{{ userProfile.initials }}</div>
+                <span class="text-sm sm:text-base">{{ news.reporter }} • {{ formatDate(news.reportDate) }}</span>
             </div>
 
-            <div class="my-6">
-                <p class="font-inter text-xl">{{ news.fullDetail }}</p>
+            <div class="my-3 sm:my-6">
+                <p class="font-inter text-base sm:text-xl">{{ news.fullDetail }}</p>
             </div>  
 
         </div>
 
         <div v-if="news">
-            <div class="divide-neutral-200 flex gap-3">
+            <div class="divide-neutral-200 flex gap-2 sm:gap-3">
             <router-link :to="{ name: 'news-comment-view' }">
                 <NavTab
                     text="Comments"
