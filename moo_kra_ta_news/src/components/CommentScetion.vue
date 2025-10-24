@@ -5,6 +5,7 @@ import { reactive } from 'vue'
 import { storeToRefs } from 'pinia';
 // const news = ref<News | null>(null)
 import { useNewsStore } from '@/stores/news.ts'
+import BaseInput from './BaseInput.vue';
 
 const alertMessage = ref('')
 const store = useNewsStore()
@@ -69,6 +70,14 @@ const form = reactive({
 
 const totalComments = computed(() => news.value?.comments?.length || 0)
 
+const comment = ref<Comment>({
+    id: 0,
+    user: '',
+    vote: 'Real',
+    comment: '',
+    imageUrl: []
+})
+
 </script>
 
 <template>
@@ -91,9 +100,7 @@ const totalComments = computed(() => news.value?.comments?.length || 0)
                     <form @submit.prevent="addComment" class="space-y-3 mb-6">
                         <!-- Name -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
-                            <input v-model="form.name" type="text" placeholder="Enter your name"
-                                class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-3" />
+                            <BaseInput v-model="comment.user" type="text" label="Your Name" placeholder="Enter your name" />
                         </div>
                         <!-- Vote -->
                         <div>
@@ -125,16 +132,14 @@ const totalComments = computed(() => news.value?.comments?.length || 0)
 
                         <!-- Comment -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Comment</label>
-                            <textarea v-model="form.comment" rows="3" placeholder="Your comment"
-                                class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+
+                            <BaseInput v-model="comment.comment" type="text" label="Comment" placeholder="Your comment" />
+
                         </div>
 
                         <!-- Image -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Image URL (optional)</label>
-                            <input v-model="form.imageUrl" type="url" placeholder="https://example.com/image.jpg"
-                                class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                             <BaseInput v-model="comment.imageUrl" type="text" label="Image URL (optional)" placeholder="https://example.com/image.jpg" />
                         </div>
                         <!-- Submit button -->
                         <button type="submit"
