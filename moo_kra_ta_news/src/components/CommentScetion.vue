@@ -4,10 +4,12 @@ import { useRoute, useRouter } from 'vue-router'
 import NewsService from '@/services/NewsService'
 import BaseInput from './BaseInput.vue'
 import type { News } from '@/types' // Make sure to import
+import { useNewsStore } from '@/stores/news'
 
 const route = useRoute()
 const router = useRouter()
 const newsId = Number(route.params.id)
+const newsStore = useNewsStore()
 
 // Fix: Add proper type
 const news = ref<News | null>(null)
@@ -45,6 +47,11 @@ function saveComment() {
       // Fix: Check if news exists and has comments
       if (news.value) {
         news.value.comments.push(response.data)
+      }
+
+    //   Update the store if needed
+      if (newsStore.news) {
+        newsStore.news.comments.push(response.data)
       }
 
       // Reset form
