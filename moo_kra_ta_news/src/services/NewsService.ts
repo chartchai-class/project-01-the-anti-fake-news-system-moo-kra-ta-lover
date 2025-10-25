@@ -9,4 +9,15 @@ export default {
   getNewsById(id: number) {
     return apiclient.get(`/news/`+id);
   },
+  saveComment(newsId: number, comment: { 
+    user: string; 
+    vote: "Fake" | "Real"; 
+    comment: string; 
+    imageUrls?: string[] 
+  }) {
+    return apiClient.post('/comments', {
+      ...comment,
+      news: { id: newsId }
+    });
+  },
 };
