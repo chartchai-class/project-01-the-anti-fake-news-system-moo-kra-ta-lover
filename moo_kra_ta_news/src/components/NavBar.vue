@@ -1,11 +1,15 @@
 <script setup lang="ts">
-import { RouterLink } from 'vue-router';
+import { RouterLink, useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 import LogoWeb from './LogoWeb.vue';
 
-
+const router = useRouter()
 const authStore = useAuthStore()
 
+function logout(){
+  authStore.logout()
+  router.push({ name: 'login' })
+}
 
 </script>
 
@@ -66,7 +70,7 @@ const authStore = useAuthStore()
         </RouterLink>
 
         <RouterLink to="/">
-          <button
+          <button @click="logout"
             class="flex items-center gap-2 border border-gray-300 text-gray-700 font-medium px-4 py-2 rounded-xl hover:bg-gray-100 transition">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
               class="bi bi-box-arrow-right" viewBox="0 0 16 16">

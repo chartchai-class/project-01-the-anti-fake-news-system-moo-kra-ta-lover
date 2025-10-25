@@ -1,15 +1,20 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/auth';
 import { CircleUserRound } from 'lucide-vue-next';
+import { storeToRefs } from 'pinia';
 import { useField, useForm } from 'vee-validate';
 import { useRouter } from 'vue-router';
 import * as yup from 'yup';
 import InputText from '../../components/InputText.vue';
+import { useMessageStore } from '../../stores/message';
 
+const messageStore = useMessageStore()
 
 const router = useRouter()
 
 const authStore = useAuthStore()
+
+const { message } = storeToRefs(messageStore)
 
 const validationSchema = yup.object({
   email: yup.string().required('The email is required'),
@@ -39,11 +44,29 @@ const onSubmit = handleSubmit((values) => {
     router.push({ name: 'login' })   
   })
   .catch((error) => {
+    messageStore.updateMessage('Register failed. Please try again Later.')
     setTimeout(() => {
       messageStore.resetMessage()
     }, 3000)
     console.log('Register failed', error) 
   });
+})
+
+import { ref, watch } from 'vue';
+
+const showFade = ref(false)
+
+watch(message, (newVal) => {
+  if (newVal) {
+    showFade.value = false // pop animation
+    setTimeout(() => {
+      showFade.value = true // start fade-out
+      setTimeout(() => {
+        messageStore.resetMessage()
+        showFade.value = false
+      }, 1000) // fade duration
+    }, 2000) // visible duration
+  }
 })
 </script>
 <template>
@@ -59,14 +82,14 @@ const onSubmit = handleSubmit((values) => {
           <div class="sm:col-span-3">
             <label for="first-name" class="block text-sm/6 font-medium text-gray-900">First name</label>
             <div class="mt-2">
-              <InputText type="text" v-model="firstName" placeholder="First Name" :error="errors['firstname']" />
+              <InputText type="text" v-model="firstName" placeholder="First Name" :error="errors['firstName']" />
             </div>
           </div>
 
           <div class="sm:col-span-3">
             <label for="last-name" class="block text-sm/6 font-medium text-gray-900">Last name</label>
             <div class="mt-2">
-              <InputText type="text" v-model="lastName" placeholder="last Name" :error="errors['lastname']" />
+              <InputText type="text" v-model="lastName" placeholder="last Name" :error="errors['lastName']" />
             </div>
           </div>
 
@@ -99,6 +122,12 @@ const onSubmit = handleSubmit((values) => {
 
         </div>
       </div>
+
+
+      <div v-if="message"
+            :class="['w-full max-w-sm mx-auto rounded-lg bg-red-600 px-6 py-3 text-white text-center shadow-lg', showFade ? 'animate-fadeOut' : 'animate-pop']">
+            <p class="text-sm font-medium">{{ message }}</p>
+          </div>
 
       <div class="mt-6 flex items-center justify-end gap-x-6">
         <button type="button" class="text-sm/6 font-semibold text-gray-900">Cancel</button>
