@@ -1,12 +1,11 @@
 <!-- HomePage.vue -->
 <script setup lang="ts">
-import NewsCarousel from '../components/home-page/NewsCarousel.vue';
-import { onMounted, computed, ref, watch } from 'vue';
-import NewsService from '@/services/NewsService';
 import NavTab from '@/components/home-page/NavTab.vue';
 import NewsCard from '@/components/NewsCard.vue';
+import NewsService from '@/services/NewsService';
 import { useNewsFilterStore, type FilterType } from '@/stores/newsFilter';
-import { onUnmounted } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import NewsCarousel from '../components/home-page/NewsCarousel.vue';
 
 // Use the store
 const newsFilterStore = useNewsFilterStore();
@@ -100,7 +99,7 @@ const toggleDropdown = () => {
 </script>
 
 <template>
-  <main class="flex flex-col mx-auto max-w-7xl gap-6 p-6 lg:px-8">
+  <main class="flex flex-col mx-auto max-w-7xl gap-6 p-6 lg:px-8" >
     <div class="w-full flex flex-col items-center justify-center bg-neutral-100 rounded-lg py-6">
       <h1 class="uppercase tracking-[3.20px] font-medium leading-loose">Welcome to Moo Kra Ta News</h1>
       <div class="text-2xl md:text-3xl font-semibold leading-[50px] text-center flex flex-col items-center justify-center">

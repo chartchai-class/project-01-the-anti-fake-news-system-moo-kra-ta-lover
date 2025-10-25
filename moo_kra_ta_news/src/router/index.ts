@@ -1,4 +1,5 @@
 import NewsService from '@/services/NewsService'
+import { useAuthStore } from '@/stores/auth'
 import { useNewsStore } from '@/stores/news'
 import NetworkErrorView from '@/views/NetworkErrorView.vue'
 import NewsCommentView from '@/views/news/CommentView.vue'
@@ -11,6 +12,7 @@ import LoginView from '../views/auth/LoginView.vue'
 import RegisterView from '../views/auth/RegisterView.vue'
 import HomeView from '../views/HomeView.vue'
 
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -18,6 +20,7 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
+      meta: { requiresAuth: true },
     },
     {
       path: '/new/:id/',
@@ -104,5 +107,17 @@ router.beforeEach(() => {
 router.afterEach(() => {
   nProgress.done()
 })
+
+
+router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore();
+
+  if (to.meta.requiresAuth && !authStore.currentUserFirstName) {
+    next({ path: '/login' }); // redirect if not logged in
+  } else {
+    next(); // allow navigation
+  }
+});
+
 
 export default router
