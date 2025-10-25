@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import { RouterLink } from 'vue-router';
+import { useAuthStore } from '../stores/auth';
 import LogoWeb from './LogoWeb.vue';
 
-// Local toggle state for demo purposes. Replace with real auth state as needed.
-const isLoggedIn = ref(false);
+
+const authStore = useAuthStore()
+
 
 function signOut() {
   console.log('Signing up...');
@@ -32,7 +33,7 @@ function signOut() {
       <!-- Right-side buttons: Sign in / Sign out -->
       <div class="flex items-center">
         <!-- Sign in and Sign up button shown when not logged in -->
-        <div v-if="!isLoggedIn" class="flex items-center gap-3">
+        <div v-if="!authStore.currentUserFirstName" class="flex items-center gap-3">
           <div
             class="rounded-full px-4 py-2 text-sm font-medium bg-white border border-gray-300 text-gray-800 hover:bg-gray-100 shadow">
             <router-link to="/logIn">
@@ -52,7 +53,7 @@ function signOut() {
           </div>
         </div>
 
-        <div v-else class="flex items-center gap-3">
+        <div v-if="authStore.currentUserFirstName" class="flex items-center gap-3">
           <!-- Sign out shown when logged in -->
           <button @click="signOut"
             class="rounded-full px-4 py-2 text-sm font-medium bg-red-500 text-white hover:bg-red-600 shadow">

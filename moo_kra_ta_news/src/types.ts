@@ -20,3 +20,11 @@ export interface Comment {
 export interface NewsState {
     news: News | null
 }
+
+export interface User {
+    id: number
+    firstname: string
+    lastname: string
+    email: string
+    roles: string[]
+}
