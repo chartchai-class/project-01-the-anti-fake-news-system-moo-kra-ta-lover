@@ -82,12 +82,42 @@ function showAlert(message: string) {
   setTimeout(() => (alertMessage.value = ''), 3000)
 }
 
+const totalComments = computed(() => {
+  return news.value?.comments?.length || 0
+})
+
+const realVotes = computed(() => {
+  return news.value?.comments?.filter(comment => comment.vote === 'Real').length || 0
+})
+
+const fakeVotes = computed(() => {
+  return news.value?.comments?.filter(comment => comment.vote === 'Fake').length || 0
+})
+
 </script>
 
 <template>
   <div class="max-w-4xl mx-auto p-6">
     <div v-if="alertMessage" class="mb-4 p-3 rounded-lg bg-red-100 text-red-700 font-medium">
       {{ alertMessage }}
+    </div>
+
+    <div class="mb-4 p-4 bg-white border rounded-lg shadow-sm">
+      <h3 class="font-semibold text-lg mb-2">Comment Statistics</h3>
+      <div class="grid grid-cols-3 gap-4 text-center">
+        <div>
+          <div class="text-2xl font-bold text-blue-600">{{ totalComments }}</div>
+          <div class="text-sm text-gray-600">Total Comments</div>
+        </div>
+        <div>
+          <div class="text-2xl font-bold text-green-600">{{ realVotes }}</div>
+          <div class="text-sm text-gray-600">Real Votes</div>
+        </div>
+        <div>
+          <div class="text-2xl font-bold text-red-600">{{ fakeVotes }}</div>
+          <div class="text-sm text-gray-600">Fake Votes</div>
+        </div>
+      </div>
     </div>
 
     <form @submit.prevent="saveComment" class="space-y-3">
