@@ -1,10 +1,17 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/auth';
+import { useMessageStore } from '@/stores/message';
+import { storeToRefs } from 'pinia';
 import { useField, useForm } from 'vee-validate';
 import { useRouter } from 'vue-router';
 import * as yup from 'yup';
 import InputText from '../../components/InputText.vue';
 
+
+
+const messageStore = useMessageStore()
+
+const { message } = storeToRefs(messageStore)
 
 const router = useRouter()
 
@@ -32,11 +39,31 @@ const onSubmit = handleSubmit((values) => {
     router.push({ name: 'home' })   
   })
   .catch((error) => {
+    messageStore.updateMessage('Login failed. Please check your credentials and try again.')
     setTimeout(() => {
+      messageStore.resetMessage()
     }, 3000)
     console.log('Login failed', error) 
   });
 })
+
+import { ref, watch } from 'vue';
+
+const showFade = ref(false)
+
+watch(message, (newVal) => {
+  if (newVal) {
+    showFade.value = false // pop animation
+    setTimeout(() => {
+      showFade.value = true // start fade-out
+      setTimeout(() => {
+        messageStore.resetMessage()
+        showFade.value = false
+      }, 1000) // fade duration
+    }, 2000) // visible duration
+  }
+})
+
 
 </script>
 <template>
@@ -47,11 +74,11 @@ const onSubmit = handleSubmit((values) => {
     </div>
 
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-      <form class="space-y-6"  @submit.prevent='onSubmit'>
+      <form class="space-y-6" @submit.prevent='onSubmit'>
         <div>
           <label for="email" class="block text-sm/6 font-medium text-gray-900">Email address</label>
           <div class="mt-2">
-            <InputText type="email" v-model="email" placeholder="Email address" :error="errors['email']"/>
+            <InputText type="email" v-model="email" placeholder="Email address" :error="errors['email']" />
           </div>
         </div>
 
@@ -64,8 +91,18 @@ const onSubmit = handleSubmit((values) => {
           </div>
         </div>
 
-        <div>
-          <button type="submit" class="flex w-full justify-center rounded-md bg-red-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Sign in</button>
+        <div class="space-y-4">
+          <div v-if="message"
+            :class="['w-full max-w-sm mx-auto rounded-lg bg-red-600 px-6 py-3 text-white text-center shadow-lg', showFade ? 'animate-fadeOut' : 'animate-pop']">
+            <p class="text-sm font-medium">{{ message }}</p>
+          </div>
+
+          <div>
+            <button type="submit"
+              class="flex w-full justify-center rounded-md bg-red-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+              Sign in
+            </button>
+          </div>
         </div>
       </form>
 
