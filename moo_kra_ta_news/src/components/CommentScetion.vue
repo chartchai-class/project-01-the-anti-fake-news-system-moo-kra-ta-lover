@@ -1,155 +1,107 @@
 <script lang="ts" setup>
-import type { Comment } from '@/types'
-import { ref, computed } from 'vue'
-import { reactive } from 'vue'
-import { storeToRefs } from 'pinia';
-// const news = ref<News | null>(null)
-import { useNewsStore } from '@/stores/news.ts'
-import BaseInput from './BaseInput.vue';
+import { ref, reactive, onMounted, computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import NewsService from '@/services/NewsService'
+import BaseInput from './BaseInput.vue'
+import type { News, Comment } from '@/types'
 
+const route = useRoute()
+const router = useRouter()
+const newsId = Number(route.params.id)
+
+const news = ref<News | null>(null)
 const alertMessage = ref('')
-const store = useNewsStore()
 
+// form for posting comment
+const form = reactive({
+  name: '',
+  comment: '',
+  vote: 'Real' as 'Real' | 'Fake',
+  imageUrl: '',
+  voted: false
+})
+
+// total comments
+const totalComments = computed(() => news.value?.comments?.length || 0)
+
+// show alert helper
 function showAlert(message: string) {
-    alertMessage.value = message
-
-    // disappear after 3 seconds
-    setTimeout(() => {
-        alertMessage.value = ''
-    }, 3000)
+  alertMessage.value = message
+  setTimeout(() => alertMessage.value = '', 3000)
 }
 
+// fetch news detail with comments
+const loadNews = async () => {
+  try {
+    const response = await NewsService.getNewsById(newsId)
+    news.value = response.data
+  } catch (error) {
+    console.error(error)
+    router.push({ name: 'network-error-view' })
+  }
+}
 
-function addComment() {
-    if (!news.value) return
+// save a comment
+async function saveComment() {
+  if (!form.name.trim()) return showAlert('⚠️ Please enter your name.')
+  if (!form.comment.trim()) return showAlert('⚠️ Please write a comment.')
 
-    if (!form.name.trim()) {
-        showAlert("⚠️ Please enter your name.")
-        return
-    }
+  try {
+    await NewsService.saveComment(newsId, {
+  user: form.name,
+  vote: form.vote,
+  comment: form.comment,
+  imageUrls: form.imageUrl ? [form.imageUrl] : []
+});
 
-    if (!form.vote) {
-        showAlert("⚠️ Please select Real or Fake.")
-        return
-    }
+    showAlert('✅ Comment posted!')
 
-    if (!form.comment.trim()) {
-        showAlert("⚠️ Please write a comment.")
-        return
-    }
-
-    const newComment: Comment = {
-        id: news.value.comments.length + 1,
-        user: form.name,
-        vote: form.vote,
-        comment: form.comment,
-        imageUrl: form.imageUrl ? [form.imageUrl] : []
-    }
-
-    store.addComment(newComment)
-
-    // reset form
+    // Reset form
     form.name = ''
     form.comment = ''
     form.vote = 'Real'
     form.imageUrl = ''
     form.voted = false
+
+    // Reload comments
+    await loadNews()
+  } catch (error) {
+    console.error(error)
+    router.push({ name: 'network-error-view' })
+  }
 }
 
-
-const { news } = storeToRefs(store)
-
-// single reactive form
-const form = reactive({
-    name: '',
-    comment: '',
-    vote: 'Real' as 'Real' | 'Fake', // optional if you want vote
-    imageUrl: '', // optional
-    voted: false
+onMounted(() => {
+  loadNews()
 })
-
-const totalComments = computed(() => news.value?.comments?.length || 0)
-
-const comment = ref<Comment>({
-    id: 0,
-    user: '',
-    vote: 'Real',
-    comment: '',
-    imageUrl: []
-})
-
 </script>
 
 <template>
-    <div>
-        <div v-if="alertMessage" class="mb-4 p-3 rounded-lg bg-red-100 border border-red-300 text-red-700 font-medium">
-            {{ alertMessage }}
-        </div>
-        <div v-if="news">
-            <div class="shadow-card hover:shadow-news transition-all duration-300">
-                <div class="mx-auto p-6 bg-white rounded-2xl shadow-md border border-gray-200">
-                    <!-- head -->
-                    <div class="flex items-center mb-4">
-                        <svg class="w-6 h-6 text-gray-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8-1.526 0-2.947-.388-4.156-1.06L3 20l1.06-4.156C3.388 14.947 3 13.526 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                        </svg>
-                        <h2 class="text-lg font-bold">Comments ( {{ totalComments }} )</h2>
-                    </div>
-                    <!-- comment box -->
-                    <form @submit.prevent="addComment" class="space-y-3 mb-6">
-                        <!-- Name -->
-                        <div>
-                            <BaseInput v-model="comment.user" type="text" label="Your Name" placeholder="Enter your name" />
-                        </div>
-                        <!-- Vote -->
-                        <div>
-                            <div class="text-center mb-4">
-                                <h2 class="text-2xl font-bold mb-2">What do you think?</h2>
-                                <p class="text-muted-foreground">
-                                    {{ form.voted ? "Thank you for your vote!" : "Vote to help verify this news article"
-                                    }}
-                                </p>
-                            </div>
+  <div v-if="news" class="max-w-4xl mx-auto p-6">
 
-
-                            <div class="flex gap-4 max-w-md mx-auto">
-                                <button type="button" @click="form.vote = 'Real'; form.voted = true"
-                                    :class="form.vote === 'Real' ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-600'"
-                                    class="flex-1 py-2 rounded-md transform transition duration-500 hover:scale-105 active:scale-95 hover:shadow-md">
-                                    Real
-                                </button>
-
-                                <button type="button" @click="form.vote = 'Fake'; form.voted = true"
-                                    :class="form.vote === 'Fake' ? 'bg-red-600 text-white' : 'bg-gray-200 text-gray-600'"
-                                    class="flex-1 py-2 rounded-md transform transition duration-500 hover:scale-105 active:scale-95 hover:shadow-md">
-                                    Fake
-                                </button>
-
-                            </div>
-                        </div>
-
-
-                        <!-- Comment -->
-                        <div>
-
-                            <BaseInput v-model="comment.comment" type="text" label="Comment" placeholder="Your comment" />
-
-                        </div>
-
-                        <!-- Image -->
-                        <div>
-                             <BaseInput v-model="comment.imageUrl" type="text" label="Image URL (optional)" placeholder="https://example.com/image.jpg" />
-                        </div>
-                        <!-- Submit button -->
-                        <button type="submit"
-                            class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
-                            Post Comment
-                        </button>
-                    </form>
-
-                </div>
-            </div>
-        </div>
+    <!-- Alert -->
+    <div v-if="alertMessage" class="mb-4 p-3 rounded-lg bg-red-100 text-red-700 font-medium">
+      {{ alertMessage }}
     </div>
+
+    <h2 class="text-2xl font-bold mb-4">
+    Comments ({{ totalComments }})
+  </h2>
+
+    <!-- Post Comment Form -->
+    <form @submit.prevent="saveComment" class="space-y-3">
+      <BaseInput v-model="form.name" type="text" label="Your Name" placeholder="Enter your name" />
+      <div class="flex gap-4">
+        <button type="button" @click="form.vote='Real'; form.voted=true" 
+          :class="form.vote==='Real' ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-600'"
+          class="flex-1 py-2 rounded-md">Real</button>
+        <button type="button" @click="form.vote='Fake'; form.voted=true" 
+          :class="form.vote==='Fake' ? 'bg-red-600 text-white' : 'bg-gray-200 text-gray-600'"
+          class="flex-1 py-2 rounded-md">Fake</button>
+      </div>
+      <BaseInput v-model="form.comment" type="text" label="Comment" placeholder="Write your comment" />
+      <BaseInput v-model="form.imageUrl" type="text" label="Image URL (optional)" placeholder="https://..." />
+      <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded-md">Post Comment</button>
+    </form>
+  </div>
 </template>

@@ -32,9 +32,9 @@ const userProfile = computed(() => getUserProfile(props.comment.user|| ''));
                 </div>
             </div>
             
-            <div v-if="comment.imageUrl && comment.imageUrl.length > 0" class="mt-3 sm:mt-6 flex flex-wrap gap-2 sm:gap-4">
+            <div v-if="comment.imageUrls && comment.imageUrls.length > 0" class="mt-3 sm:mt-6 flex flex-wrap gap-2 sm:gap-4">
                 <div 
-                    v-for="(image, index) in comment.imageUrl" :key="index" class="w-32 h-32 sm:w-48 sm:h-48 rounded-xl overflow-hidden items-center justify-center mb-2 sm:mb-4 flex">
+                    v-for="(image, index) in comment.imageUrls" :key="index" class="w-32 h-32 sm:w-48 sm:h-48 rounded-xl overflow-hidden items-center justify-center mb-2 sm:mb-4 flex">
                     <img 
                         :src="image" 
                         :alt="`News Image ${index}`" 

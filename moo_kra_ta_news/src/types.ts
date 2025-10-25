@@ -14,7 +14,7 @@ export interface Comment {
     user: string
     vote: "Fake" | "Real"
     comment: string
-    imageUrl: string[]
+    imageUrls?: string[]
 }
 
 export interface NewsState {

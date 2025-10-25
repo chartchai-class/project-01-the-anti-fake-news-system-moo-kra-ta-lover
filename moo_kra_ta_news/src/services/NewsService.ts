@@ -17,4 +17,11 @@ export default {
   getNewsById(id: number) {
     return apiClient.get(`/news/`+id);
   },
+  saveComment(newsId: number, comment: { user: string; vote: string; comment: string; imageUrls?: string[] }) {
+  return apiClient.post('/comments', {
+    ...comment,            // spread the comment properties directly
+    imageUrls: comment.imageUrls || [], // ensure imageUrls is always an array
+    news: { id: newsId }   // attach the news reference
+  });
+}
 };
