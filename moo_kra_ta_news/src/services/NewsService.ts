@@ -15,7 +15,7 @@ export default {
     comment: string; 
     imageUrls?: string[] 
   }) {
-    return apiClient.post('/comments', {
+    return apiclient.post('/comments', {
       ...comment,
       news: { id: newsId }
     });
