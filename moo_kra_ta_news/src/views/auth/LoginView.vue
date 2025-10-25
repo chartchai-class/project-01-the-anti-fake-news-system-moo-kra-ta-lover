@@ -1,4 +1,43 @@
 <script setup lang="ts">
+import { useAuthStore } from '@/stores/auth';
+import { useField, useForm } from 'vee-validate';
+import { useRouter } from 'vue-router';
+import * as yup from 'yup';
+import InputText from '../../components/InputText.vue';
+
+
+const router = useRouter()
+
+const authStore = useAuthStore()
+
+const validationSchema = yup.object({
+  email: yup.string().required('The email is required'),
+  password: yup.string().required('The password is required')
+})
+const { errors, handleSubmit } = useForm({
+  validationSchema,
+  initialValues: {
+    email: '',
+    password: ''
+  }
+})
+
+const { value: email } = useField<string>('email')
+const { value: password } = useField<string>('password')
+
+const onSubmit = handleSubmit((values) => {
+  authStore.login(values.email, values.password)
+  .then(() => {
+    console.log('Login successful')
+    router.push({ name: 'home' })   
+  })
+  .catch((error) => {
+    setTimeout(() => {
+    }, 3000)
+    console.log('Login failed', error) 
+  });
+})
+
 </script>
 <template>
   <div class="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -8,11 +47,11 @@
     </div>
 
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-      <form class="space-y-6" action="#" method="POST">
+      <form class="space-y-6"  @submit.prevent='onSubmit'>
         <div>
           <label for="email" class="block text-sm/6 font-medium text-gray-900">Email address</label>
           <div class="mt-2">
-            <input type="email" name="email" id="email" autocomplete="email" required=true class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+            <InputText type="email" v-model="email" placeholder="Email address" :error="errors['email']"/>
           </div>
         </div>
 
@@ -21,7 +60,7 @@
             <label for="password" class="block text-sm/6 font-medium text-gray-900">Password</label>
           </div>
           <div class="mt-2">
-            <input type="password" name="password" id="password" autocomplete="current-password" required=true class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+            <InputText type="password" v-model="password" placeholder="Password" :error="errors['password']" />
           </div>
         </div>
 
