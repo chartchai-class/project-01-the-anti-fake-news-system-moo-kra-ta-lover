@@ -13,17 +13,31 @@ const { news } = storeToRefs(store)
 
 const userProfile = computed(() => getUserProfile(news.value?.reporter || ''));
 
+const imageSrc = computed(() => {
+  const img = news.value?.imageUrl;
+  if (Array.isArray(img)) return img[0] ?? '';
+  if (typeof img === 'string') return img;
+  return '';
+});
+
 </script>
 <template>
     <div v-if="news">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 sm:lg:px-8">
 
         <div v-if="news">
-            <img
+            <!-- <img
             v-if="news.imageUrl && news.imageUrl.length > 0"
             :src="news.imageUrl[0]"
             alt="News Image" class="w-full h-48 sm:h-full sm:max-h-90 object-cover mx-auto my-3 sm:my-6"
+            /> -->
+
+            <img
+            v-if="imageSrc"
+            :src="imageSrc"
+            alt="News Image" class="w-full h-48 sm:h-full sm:max-h-90 object-cover mx-auto my-3 sm:my-6"
             />
+            
         </div>
 
         <div v-if="news">

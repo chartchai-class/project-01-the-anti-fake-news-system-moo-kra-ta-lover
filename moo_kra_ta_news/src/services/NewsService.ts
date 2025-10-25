@@ -1,5 +1,6 @@
 import apiclient from './AxiosClient';
 
+
 export default {
   getNews() {
     // return apiClient.get('/news?_limit=' + perPage + '&_page=' + page);

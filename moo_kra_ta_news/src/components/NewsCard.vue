@@ -19,18 +19,34 @@ const fakeComments = computed(() => {
   return props.news.comments?.filter(comment => comment.vote === 'Fake').length || 0;
 });
 
+const imageSrc = computed(() => {
+  const img = props.news.imageUrl;
+  if (Array.isArray(img)) return img[0] ?? '';
+  if (typeof img === 'string') return img;
+  return '';
+});
+
 </script>
 
 <template>
   <RouterLink :to=" { name: 'news-detail-view', params: { id: news.id } }">
     <div class="cursor-pointer flex flex-col w-full gap-3.5 hover:scale-101">
       <div class="relative">
-        <img
+        <!-- <img
         v-if="news.imageUrl && news.imageUrl.length > 0"
         :src="news.imageUrl[0]"
         alt="News Image"
         class="w-full h-72 object-cover rounded-xl mb-2"
+        /> -->
+
+        <img
+        v-if="news.imageUrl && news.imageUrl.length > 0"
+        :src="imageSrc"
+        alt="News Image"
+        class="w-full h-72 object-cover rounded-xl mb-2"
         />
+        
+        
         <StatusCard :isReal="realComments > fakeComments" :text="realComments > fakeComments ? 'Trusted' : 'Fake'"></StatusCard>
       </div>
       <div class="text-neutral-600 flex items-center gap-2">
