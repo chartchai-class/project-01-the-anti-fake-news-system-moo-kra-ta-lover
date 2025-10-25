@@ -26,8 +26,8 @@ const fakeComments = computed(() => {
     <div class="cursor-pointer flex flex-col w-full gap-3.5 hover:scale-101">
       <div class="relative">
         <img
-        v-if="news.imageUrl && news.imageUrl.length > 0"
-        :src="news.imageUrl[0]"
+        v-if="news.imageUrl"
+        :src="news.imageUrl"
         alt="News Image"
         class="w-full h-72 object-cover rounded-xl mb-2"
         />

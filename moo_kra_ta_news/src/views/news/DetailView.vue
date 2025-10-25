@@ -21,7 +21,7 @@ const userProfile = computed(() => getUserProfile(news.value?.reporter || ''));
         <div v-if="news">
             <img
             v-if="news.imageUrl && news.imageUrl.length > 0"
-            :src="news.imageUrl[0]"
+            :src="news.imageUrl"
             alt="News Image" class="w-full h-48 sm:h-full sm:max-h-90 object-cover mx-auto my-3 sm:my-6"
             />
         </div>
@@ -38,7 +38,7 @@ const userProfile = computed(() => getUserProfile(news.value?.reporter || ''));
 
             <div class="my-3 sm:my-6">
                 <p class="font-inter text-base sm:text-xl">{{ news.fullDetail }}</p>
-            </div>  
+            </div>
 
         </div>
 
@@ -58,7 +58,7 @@ const userProfile = computed(() => getUserProfile(news.value?.reporter || ''));
                 />
             </router-link>
             </div>
-    
+
             <router-view />
         </div>
 
