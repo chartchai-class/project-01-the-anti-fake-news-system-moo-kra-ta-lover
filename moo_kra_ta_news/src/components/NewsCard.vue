@@ -32,21 +32,18 @@ const imageSrc = computed(() => {
   <RouterLink :to=" { name: 'news-detail-view', params: { id: news.id } }">
     <div class="cursor-pointer flex flex-col w-full gap-3.5 hover:scale-101">
       <div class="relative">
-        <!-- <img
-        v-if="news.imageUrl && news.imageUrl.length > 0"
-        :src="news.imageUrl[0]"
+        <img
+        v-if="news.imageUrl"
+        :src="news.imageUrl"
         alt="News Image"
         class="w-full h-72 object-cover rounded-xl mb-2"
-        /> -->
-
-        <img
+        />
+        <!-- <img
         v-if="news.imageUrl && news.imageUrl.length > 0"
         :src="imageSrc"
         alt="News Image"
         class="w-full h-72 object-cover rounded-xl mb-2"
-        />
-        
-        
+        /> -->
         <StatusCard :isReal="realComments > fakeComments" :text="realComments > fakeComments ? 'Trusted' : 'Fake'"></StatusCard>
       </div>
       <div class="text-neutral-600 flex items-center gap-2">
