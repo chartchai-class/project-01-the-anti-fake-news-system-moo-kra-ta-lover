@@ -1,4 +1,4 @@
-import type { News } from '@/types';
+import type {  } from '@/types';
 import apiclient from './AxiosClient';
 
 

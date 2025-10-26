@@ -10,7 +10,22 @@ import { useAuthStore } from '@/stores/auth'
 const router = useRouter()
 const authStore = useAuthStore()
 
-// Remove the old form object since we're using news object
+const notification = ref({
+  show: false,
+  message: '',
+})
+
+const showNotification = (message: string) => {
+  notification.value = {
+    show: true,
+    message,
+  }
+  
+  setTimeout(() => {
+    notification.value.show = false
+  }, 6000)
+}
+
 const news = ref<News>({
   id: 0,
   topic: '',
@@ -22,7 +37,7 @@ const news = ref<News>({
   comments: [],
 })
 
-// Form validation - check the news object instead of form
+// Form validation 
 const isFormValid = computed(() => {
   return (
     news.value.topic.trim().length > 0 &&
@@ -35,7 +50,6 @@ const isFormValid = computed(() => {
 // Single image array for the upload component
 const singleImageArray = ref<string[]>([])
 
-// Watch for image changes and update news.imageUrl
 watch(singleImageArray, (newImages) => {
   if (newImages.length > 0) {
     news.value.imageUrl = newImages[0]
@@ -48,11 +62,10 @@ watch(singleImageArray, (newImages) => {
 // Form submission
 async function saveNews() {
   try {
-    // Set reporter name from auth store
+
     const userFullName = `${authStore.user?.firstname || ''} ${authStore.user?.lastname || ''}`.trim()
     news.value.reporter = userFullName || 'Anonymous'
     
-    // Set current date
     news.value.reportDate = new Date().toISOString()
     
     console.log('Submitting news with reporter:', news.value.reporter)
@@ -62,9 +75,8 @@ async function saveNews() {
     console.log('Form valid:', isFormValid.value)
     console.log('Full news data:', news.value)
 
-    // Create the data object that matches backend expectations
-    const newsDataForBackend = {
-      name: news.value.topic,
+    const newsData = {
+      topic: news.value.topic,
       shortDetail: news.value.shortDetail,
       fullDetail: news.value.fullDetail,
       reporter: news.value.reporter,
@@ -72,26 +84,28 @@ async function saveNews() {
       imageUrl: news.value.imageUrl
     }
 
-    console.log('Sending to backend:', newsDataForBackend)
+    console.log('Sending to backend:', newsData)
 
-    const response = await NewsService.saveNews(newsDataForBackend)
+    const response = await NewsService.saveNews(newsData)
     console.log('News saved successfully:', response)
+
+    showNotification('🎉 News posted successfully! Redirecting to home page...')
     
-    // Reset form
-    news.value = {
-      id: 0,
-      topic: '',
-      shortDetail: '',
-      fullDetail: '',
-      reporter: '',
-      reportDate: '',
-      imageUrl: '',
-      comments: [],
-    }
-    singleImageArray.value = []
-    
-    // Redirect to home page after successful submission
-    router.push('/')
+    setTimeout(() => {
+      news.value = {
+        id: 0,
+        topic: '',
+        shortDetail: '',
+        fullDetail: '',
+        reporter: '',
+        reportDate: '',
+        imageUrl: '',
+        comments: [],
+      }
+      singleImageArray.value = []
+      
+      router.push('/')
+    }, 2000)
     
   } catch (error) {
     console.error('Error saving news:', error)
@@ -102,6 +116,27 @@ async function saveNews() {
 
 <template>
   <div class="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+    <!-- Success Notification Only -->
+    <div
+      v-if="notification.show"
+      class="fixed top-4 right-4 z-50 max-w-sm p-4 rounded-xl shadow-lg border transform transition-all duration-300 bg-green-50 border-green-200 text-green-800"
+    >
+      <div class="flex items-center gap-3">
+        <span class="text-xl text-green-600">
+          ✅
+        </span>
+        <div class="flex-1">
+          <p class="font-medium text-sm">{{ notification.message }}</p>
+        </div>
+        <button
+          @click="notification.show = false"
+          class="p-1 rounded-full hover:bg-green-600 hover:bg-opacity-20 text-green-600 transition-colors"
+        >
+          ✕
+        </button>
+      </div>
+    </div>
+
     <!-- Header Section -->
     <header class="mb-8">
       <router-link
@@ -124,28 +159,6 @@ async function saveNews() {
         <p class="text-gray-600 text-lg max-w-2xl">
           Share news and let the community verify its authenticity
         </p>
-        <!-- Show current user -->
-        <div v-if="authStore.user" class="mt-2 text-sm text-gray-500">
-          Logged in as: <strong>{{ authStore.user.firstname }} {{ authStore.user.lastname }}</strong>
-        </div>
-        
-        <!-- Show form validation status -->
-        <div class="mt-2 text-sm">
-          <div :class="news.topic.trim().length > 0 ? 'text-green-600' : 'text-red-600'">
-            {{ news.topic.trim().length > 0 ? '✅' : '❌' }} Title: {{ news.topic.trim().length }}/1
-          </div>
-          <div :class="news.shortDetail.trim().length >= 10 && news.shortDetail.trim().length <= 300 ? 'text-green-600' : 'text-red-600'">
-            {{ news.shortDetail.trim().length >= 10 && news.shortDetail.trim().length <= 300 ? '✅' : '❌' }} 
-            Summary: {{ news.shortDetail.trim().length }}/300 (min 10)
-          </div>
-          <div :class="news.fullDetail.trim().length >= 50 ? 'text-green-600' : 'text-red-600'">
-            {{ news.fullDetail.trim().length >= 50 ? '✅' : '❌' }} 
-            Details: {{ news.fullDetail.trim().length }}+ characters (min 50)
-          </div>
-          <div class="mt-1 font-semibold" :class="isFormValid ? 'text-green-600' : 'text-red-600'">
-            {{ isFormValid ? '✅ Form is valid - Ready to submit!' : '❌ Form is incomplete' }}
-          </div>
-        </div>
       </div>
     </header>
 
@@ -201,7 +214,7 @@ async function saveNews() {
           </div>
         </div>
 
-        <!-- Image Upload - Only ONE image allowed -->
+        <!-- Image Upload -->
         <div>
           <label class="block text-sm font-semibold text-gray-800 mb-3">
             News Image
@@ -209,7 +222,6 @@ async function saveNews() {
           <ImageUpload 
             v-model="singleImageArray" 
             :max-files="1" 
-            
           />
           <p class="text-xs text-gray-500 mt-2">
             Supported formats: JPG, PNG, GIF (Max 10MB) - Only one image allowed

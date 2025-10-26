@@ -1,16 +1,14 @@
 <script setup lang="ts">
 import Uploader from 'vue-media-upload'
-import { ref, watch } from 'vue'
-import { useAuthStore } from '@/stores/auth'
+import { ref } from 'vue'
+import { useAuthStore } from '@/stores/auth' // Adjust path to your auth store
 
 interface Props {
     modelValue?: string[]
-    maxFiles?: number
 }
 
 const props = withDefaults(defineProps<Props>(), {
-    modelValue: () => [],
-    maxFiles: 1
+    modelValue: () => []
 })
 
 interface MediaItem {
@@ -42,32 +40,9 @@ const uploadConfig = ref({
     fieldName: 'image'
 })
 
-// Watch the modelValue to ensure it never exceeds maxFiles
-watch(() => props.modelValue, (newValue) => {
-    if (props.maxFiles > 0 && newValue.length > props.maxFiles) {
-        const limitedValue = newValue.slice(0, props.maxFiles)
-        emit('update:modelValue', limitedValue)
-    }
-}, { immediate: true })
-
 const onChange = (files: MediaItem[]) => {
     console.log('Uploaded files:', files)
-    
-    // STRICT enforcement of max files
-    let limitedFiles = files
-    if (props.maxFiles > 0) {
-        // Always take only the first file if maxFiles is 1
-        limitedFiles = files.slice(0, props.maxFiles)
-        
-        // If we already have files and trying to add more, replace instead of add
-        if (props.maxFiles === 1 && files.length > 0) {
-            limitedFiles = [files[0]] // Only take the first file
-            console.log('Single file mode: Only keeping first file')
-        }
-    }
-    
-    console.log('After limiting:', limitedFiles)
-    emit('update:modelValue', convertMediaToString(limitedFiles))
+    emit('update:modelValue', convertMediaToString(files))
 }
 
 const onError = (error: unknown) => {
@@ -77,7 +52,7 @@ const onError = (error: unknown) => {
         console.error('Error status:', err.status)
         console.error('Error message:', err.message)
     } else {
-        console.error('Error details:', String(error))
+        console.error('Upload error is not an object:', error)
     }
 }
 </script>
@@ -89,11 +64,5 @@ const onError = (error: unknown) => {
         @error="onError"
         :media="media"
         :upload-config="uploadConfig"
-        :max-files="maxFiles"
     />
-    
-    <!-- Show warning if too many files -->
-    <div v-if="props.modelValue.length > maxFiles" class="text-red-500 text-sm mt-2">
-        ⚠️ Maximum {{ maxFiles }} file(s) allowed. Only the first {{ maxFiles }} will be kept.
-    </div>
 </template>
