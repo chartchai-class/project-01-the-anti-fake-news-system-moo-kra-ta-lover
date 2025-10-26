@@ -1,3 +1,4 @@
+import type { News } from '@/types';
 import apiclient from './AxiosClient';
 
 
@@ -20,4 +21,7 @@ export default {
       news: { id: newsId }
     });
   },
+  saveNews(news: {topic: string ; shortDetail: string; fullDetail: string; reporter: string; reportDate: string; imageUrl?: string}) {
+    return apiclient.post('/news', news);
+  }
 };
