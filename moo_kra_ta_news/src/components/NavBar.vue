@@ -57,7 +57,7 @@ function logout(){
 
 
       <div class="flex items-center gap-3" v-if="authStore.currentUserFirstName">
-        <RouterLink to="/">
+        <RouterLink to="/Submit-news">
           <button
             class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-medium px-4 py-2 rounded-xl transition">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg"

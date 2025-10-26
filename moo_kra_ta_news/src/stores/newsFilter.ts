@@ -17,27 +17,37 @@ export const useNewsFilterStore = defineStore('newsFilter', () => {
     allNews.value = news
   }
 
-  const filteredNews = computed(() => {
-    switch (activeFilter.value) {
-      case 'trusted':
-        return allNews.value.filter(newsItem => {
-          const realVotes = newsItem.comments?.filter(c => c.vote === 'Real').length || 0
-          const fakeVotes = newsItem.comments?.filter(c => c.vote === 'Fake').length || 0
-          return realVotes > fakeVotes
-        })
+  // In stores/newsFilter.ts
+const filteredNews = computed(() => {
+  let result;
+  
+  switch (activeFilter.value) {
+    case 'trusted':
+      result = allNews.value.filter(newsItem => {
+        const realVotes = newsItem.comments?.filter(c => c.vote === 'Real').length || 0
+        const fakeVotes = newsItem.comments?.filter(c => c.vote === 'Fake').length || 0
+        if (realVotes === 0 && fakeVotes === 0) return true
+        return realVotes > fakeVotes
+      })
+      break;
 
-      case 'fake':
-        return allNews.value.filter(newsItem => {
-          const realVotes = newsItem.comments?.filter(c => c.vote === 'Real').length || 0
-          const fakeVotes = newsItem.comments?.filter(c => c.vote === 'Fake').length || 0
-          return fakeVotes > realVotes
-        })
+    case 'fake':
+      result = allNews.value.filter(newsItem => {
+        const realVotes = newsItem.comments?.filter(c => c.vote === 'Real').length || 0
+        const fakeVotes = newsItem.comments?.filter(c => c.vote === 'Fake').length || 0
+        return fakeVotes > realVotes
+      })
+      break;
 
-      case 'all':
-      default:
-        return allNews.value
-    }
-  })
+    case 'all':
+    default:
+      result = allNews.value
+      break;
+  }
+  
+  // ✅ Sort by date (newest first)
+  return result.sort((a, b) => new Date(b.reportDate).getTime() - new Date(a.reportDate).getTime())
+})
 
   const newsCount = computed(() => ({
     all: allNews.value.length,
