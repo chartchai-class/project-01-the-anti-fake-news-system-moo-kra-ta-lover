@@ -43,7 +43,9 @@ const isFormValid = computed(() => {
     news.value.topic.trim().length > 0 &&
     news.value.shortDetail.trim().length >= 10 &&
     news.value.shortDetail.trim().length <= 300 &&
-    news.value.fullDetail.trim().length >= 50
+    news.value.fullDetail.trim().length >= 50 &&
+    singleImageArray.value.length > 0 &&
+    singleImageArray.value[0].trim().length > 0 
   )
 })
 
@@ -67,13 +69,6 @@ async function saveNews() {
     news.value.reporter = userFullName || 'Anonymous'
     
     news.value.reportDate = new Date().toISOString()
-    
-    console.log('Submitting news with reporter:', news.value.reporter)
-    console.log('Topic length:', news.value.topic.length)
-    console.log('Short detail length:', news.value.shortDetail.length)
-    console.log('Full detail length:', news.value.fullDetail.length)
-    console.log('Form valid:', isFormValid.value)
-    console.log('Full news data:', news.value)
 
     const newsData = {
       topic: news.value.topic,
@@ -109,7 +104,7 @@ async function saveNews() {
     
   } catch (error) {
     console.error('Error saving news:', error)
-    alert('Failed to submit news. Please try again.')
+    router.push({ name: 'network-error-view' })
   }
 }
 </script>
@@ -220,12 +215,9 @@ async function saveNews() {
             News Image
           </label>
           <ImageUpload 
-            v-model="singleImageArray" 
-            :max-files="1" 
-          />
-          <p class="text-xs text-gray-500 mt-2">
-            Supported formats: JPG, PNG, GIF (Max 10MB) - Only one image allowed
-          </p>
+    v-model="singleImageArray" 
+    :max-files="1" 
+  />
         </div>
 
         <!-- Action Buttons -->
