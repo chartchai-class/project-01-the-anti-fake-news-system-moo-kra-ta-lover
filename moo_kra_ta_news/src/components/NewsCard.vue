@@ -9,6 +9,9 @@ const props = defineProps<{
   news: News;
 }>();
 
+// Debug: Log the news data
+console.log('NewsCard received news:', props.news)
+
 const userProfile = computed(() => getUserProfile(props.news.reporter || ''));
 
 const realComments = computed(() => {

@@ -3,9 +3,13 @@ import apiclient from './AxiosClient';
 
 
 export default {
-  getNews() {
-    // return apiClient.get('/news?_limit=' + perPage + '&_page=' + page);
-    return apiclient.get('/news');
+  getNews(limit: number = 100, page: number = 1) {
+    return apiclient.get('/news', {
+      params: {
+        _limit: limit,
+        _page: page
+      }
+    });
   },
   getNewsById(id: number) {
     return apiclient.get(`/news/`+id);
