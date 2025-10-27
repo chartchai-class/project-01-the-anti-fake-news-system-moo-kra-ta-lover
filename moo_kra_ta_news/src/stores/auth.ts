@@ -1,3 +1,4 @@
+import router from '@/router'
 import type { User } from '@/types'
 import type { AxiosInstance } from 'axios'
 import axios from 'axios'
@@ -61,6 +62,7 @@ export const useAuthStore = defineStore('auth', {
       this.user = null
       localStorage.removeItem('access_token')
       localStorage.removeItem('user')
+      router.push({ name: 'login' })
     },
     reload(token : string, user: User) {
       this.token = token
