@@ -108,9 +108,8 @@ watch(message, (newVal) => {
 
       <p class="mt-10 text-center text-sm/6 text-gray-500">
         Not a member?
-        {{ ' ' }}
         <router-link to="/register">
-          <a href="#" class="font-semibold text-red-600 hover:text-red-500">Register Now!</a>
+          <a class="font-semibold text-red-600 hover:text-red-500">Register Now!</a>
         </router-link>
       </p>
     </div>
