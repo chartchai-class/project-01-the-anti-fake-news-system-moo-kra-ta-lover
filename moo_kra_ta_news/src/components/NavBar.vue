@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue';
 import { RouterLink, useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 import LogoWeb from './LogoWeb.vue';
@@ -10,6 +11,7 @@ function logout(){
   authStore.logout()
   router.push({ name: 'login' })
 }
+
 
 </script>
 
@@ -69,20 +71,39 @@ function logout(){
           </button>
         </RouterLink>
 
-        <RouterLink to="/">
-          <button @click="logout"
-            class="flex items-center gap-2 border border-gray-300 text-gray-700 font-medium px-4 py-2 rounded-xl hover:bg-gray-100 transition">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-              class="bi bi-box-arrow-right" viewBox="0 0 16 16">
-              <path fill-rule="evenodd"
-                d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z" />
-              <path fill-rule="evenodd"
-                d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z" />
-            </svg>
-            Sign Out
-          </button>
-        </RouterLink>
 
+        <div class="flex items-center justify-center " v-if="authStore.currentUserFirstName">
+          <Menu as="div" class="relative">
+            <MenuButton
+              class="relative flex items-center rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
+              <span class="sr-only">Open user menu</span>
+              <img class="size-10 rounded-full outline outline-1 -outline-offset-1 outline-white/10"
+                :src=authStore.currentImage alt="User profile" />
+            </MenuButton>
+
+            <transition enter-active-class="transition ease-out duration-100"
+              enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100"
+              leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100"
+              leave-to-class="transform opacity-0 scale-95">
+              <MenuItems
+                class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg outline outline-1 outline-black/5">
+                <MenuItem v-slot="{ active }">
+                <RouterLink to="/UserProfile"
+                  :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">
+                  User Profile
+                </RouterLink>
+                </MenuItem>
+
+                <MenuItem v-slot="{ active }">
+                <button @click="logout" type="button"
+                  :class="[active ? 'bg-gray-100' : '', 'block w-full text-left px-4 py-2 text-sm text-gray-700']">
+                  Sign out
+                </button>
+                </MenuItem>
+              </MenuItems>
+            </transition>
+          </Menu>
+        </div>
       </div>
     </nav>
   </header>
