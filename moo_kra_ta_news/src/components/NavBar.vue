@@ -1,17 +1,16 @@
 <script setup lang="ts">
+import { getUserProfile } from '@/utils/userProfile';
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue';
-import { RouterLink, useRouter } from 'vue-router';
+import { computed } from 'vue';
+import { RouterLink } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 import LogoWeb from './LogoWeb.vue';
 
-const router = useRouter()
 const authStore = useAuthStore()
 
-function logout(){
-  authStore.logout()
-  router.push({ name: 'login' })
-}
+const user = computed(() => authStore.user)
 
+const userProfile = computed(() => getUserProfile(authStore.currentUserFirstName|| ''));
 
 </script>
 
@@ -77,8 +76,13 @@ function logout(){
             <MenuButton
               class="relative flex items-center rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
               <span class="sr-only">Open user menu</span>
-              <img class="size-10 rounded-full outline outline-1 -outline-offset-1 outline-white/10"
-                :src=authStore.currentImage alt="User profile" />
+              <img v-if="user?.image" :src="user.image" alt="User avatar"
+                class="size-10 rounded-full outline outline-1 -outline-offset-1 outline-white/10" />
+
+              <div v-else
+                :class="[userProfile.bgColor, 'size-10 rounded-full flex items-center justify-center text-white text-xl font-semibold']">
+                {{ userProfile.initials }}
+              </div>
             </MenuButton>
 
             <transition enter-active-class="transition ease-out duration-100"
@@ -95,7 +99,7 @@ function logout(){
                 </MenuItem>
 
                 <MenuItem v-slot="{ active }">
-                <button @click="logout" type="button"
+                <button @click="authStore.logout" type="button"
                   :class="[active ? 'bg-gray-100' : '', 'block w-full text-left px-4 py-2 text-sm text-gray-700']">
                   Sign out
                 </button>
