@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import ProfileImageUpload from '@/components/ProfileImageUpload.vue';
 import { useAuthStore } from '@/stores/auth';
-import { CircleUserRound } from 'lucide-vue-next';
 import { storeToRefs } from 'pinia';
 import { useField, useForm } from 'vee-validate';
 import { useRouter } from 'vue-router';
@@ -30,6 +30,7 @@ const { errors, handleSubmit } = useForm({
     image: ''
   }
 })
+
 
 const { value: email } = useField<string>('email')
 const { value: firstName } = useField<string>('firstName')
@@ -68,6 +69,25 @@ watch(message, (newVal) => {
     }, 2000) // visible duration
   }
 })
+
+// Create a computed array for ImageUpload component
+const singleImageArray = ref<string[]>([])
+
+// Sync singleImageArray with image field
+watch(singleImageArray, (newVal) => {
+  // ImageUpload returns array, but we need single string
+  image.value = newVal.length > 0 ? newVal[0] : ''
+}, { deep: true })
+
+// Sync image field with singleImageArray (for initial values)
+watch(image, (newVal) => {
+  if (newVal && singleImageArray.value.length === 0) {
+    singleImageArray.value = [newVal]
+  } else if (!newVal) {
+    singleImageArray.value = []
+  }
+})
+
 </script>
 <template>
   <div class="mx-auto max-w-2xl">
@@ -112,28 +132,28 @@ watch(message, (newVal) => {
 
 
           <div class="col-span-full">
-            <label for="photo" class="block text-sm/6 font-medium text-gray-900">Photo</label>
             <div class="mt-2 flex items-center gap-x-3">
-              <CircleUserRound class="size-12 text-gray-300" aria-hidden="true" />
-              <button type="button"
-                class="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">Change</button>
+              <div>
+                <label class="block text-sm font-semibold text-gray-800 mb-3">
+                  Upload a profile photo
+                </label>
+                <ProfileImageUpload v-model="singleImageArray" :max-files="1" />
+              </div>
+
             </div>
           </div>
-
         </div>
       </div>
+        <div v-if="message"
+          :class="['w-full max-w-sm mx-auto rounded-lg bg-red-600 px-6 py-3 text-white text-center shadow-lg', showFade ? 'animate-fadeOut' : 'animate-pop']">
+          <p class="text-sm font-medium">{{ message }}</p>
+        </div>
 
-
-      <div v-if="message"
-            :class="['w-full max-w-sm mx-auto rounded-lg bg-red-600 px-6 py-3 text-white text-center shadow-lg', showFade ? 'animate-fadeOut' : 'animate-pop']">
-            <p class="text-sm font-medium">{{ message }}</p>
-          </div>
-
-      <div class="mt-6 flex items-center justify-end gap-x-6">
-        <button type="button" class="text-sm/6 font-semibold text-gray-900">Cancel</button>
-        <button type="submit"
-          class="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
-      </div>
+        <div class="mt-6 flex items-center justify-end gap-x-6">
+          <button type="button" class="text-sm/6 font-semibold text-gray-900">Cancel</button>
+          <button type="submit"
+            class="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
+        </div>
     </form>
   </div>
 </template>

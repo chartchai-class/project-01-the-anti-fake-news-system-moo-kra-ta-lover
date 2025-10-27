@@ -32,7 +32,10 @@ export const useAuthStore = defineStore('auth', {
     },
     authorizationHeader(): string | null {
       return `Bearer ${this.token}`
-    }
+    },
+    currentImage(): string {
+      return this.user?.image || ''
+    },
   },
 
   actions: {
