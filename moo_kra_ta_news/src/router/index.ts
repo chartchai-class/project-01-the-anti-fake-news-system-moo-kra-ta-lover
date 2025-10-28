@@ -1,9 +1,11 @@
 import NewsService from '@/services/NewsService'
 import { useAuthStore } from '@/stores/auth'
 import { useNewsStore } from '@/stores/news'
+import UserProfileView from '@/views/auth/UserProfileView.vue'
 import NetworkErrorView from '@/views/NetworkErrorView.vue'
 import NewsCommentView from '@/views/news/CommentView.vue'
 import NewsDetailView from '@/views/news/DetailView.vue'
+import NewsFormView from '@/views/news/NewsFormView.vue'
 import NewsVoteView from '@/views/news/VoteView.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
 import nProgress from 'nprogress'
@@ -11,7 +13,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '../views/auth/LoginView.vue'
 import RegisterView from '../views/auth/RegisterView.vue'
 import HomeView from '../views/HomeView.vue'
-import NewsFormView from '@/views/news/NewsFormView.vue'
 
 
 const router = createRouter({
@@ -95,6 +96,11 @@ const router = createRouter({
       path: '/Submit-news',
       name: 'Submit-news',
       component: NewsFormView,
+    },
+    {
+      path: '/UserProfile',
+      name: 'User-profile-view',
+      component: UserProfileView,
     },
   ],
   scrollBehavior(to, from, savedPosition) {
