@@ -33,28 +33,28 @@ const isError = computed(() => {
     <div>
         <div >
             <input
-            class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-red-600 sm:text-sm/6" 
-            :type="type" 
-            :id="uuid" 
-            :placeholder="placeholder" 
+            class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-red-400 sm:text-sm/6"
+            :type="type"
+            :id="uuid"
+            :placeholder="placeholder"
             v-bind="$attrs"
-            v-model="modelValue" 
+            v-model="modelValue"
             :aria-describedby="error ? `${uuid}-error` : undefined"
-            :aria-invalid="error ? true : false" 
+            :aria-invalid="error ? true : false"
         />
             <ErrorMessage class="inline-flex text-sm text-red-700" v-if="error" :id="`${uuid}-error`">
                 {{ error }}
-                <svg xmlns="http://www.w3.org/2000/svg" 
-                class="w-6 h-6" 
-                fill="none" 
+                <svg xmlns="http://www.w3.org/2000/svg"
+                class="w-6 h-6"
+                fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
                 >
-                    <path 
-                    stroke-linecap="round" 
-                    stroke-linejoin="round" 
-                    stroke-width="2" 
-                    d="M6 18L18 6M6 6l12 12" 
+                    <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
                     />
                 </svg>
             </ErrorMessage>

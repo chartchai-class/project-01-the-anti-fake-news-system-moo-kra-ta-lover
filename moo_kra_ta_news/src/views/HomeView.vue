@@ -6,6 +6,7 @@ import NewsService from '@/services/NewsService';
 import { useNewsFilterStore, type FilterType } from '@/stores/newsFilter';
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import NewsCarousel from '../components/home-page/NewsCarousel.vue';
+import SearchInput from '@/components/home-page/SearchInput.vue';
 
 // Use the store
 const newsFilterStore = useNewsFilterStore();
@@ -110,6 +111,8 @@ const toggleDropdown = () => {
     </div>
 
     <NewsCarousel :news="newsFilterStore.allNews" />
+
+    <SearchInput />
 
     <div class="divide-x-2 divide-neutral-200 flex gap-3">
       <NavTab text="All" :isActive="activeFilter === 'all'" @click="handleTabClick('all')" />
