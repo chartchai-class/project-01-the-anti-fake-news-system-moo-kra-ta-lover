@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import CommentItem from '@/components/CommentItem.vue';
 import CommentPagination from '@/components/CommentPagination.vue';
+import NewsService from '@/services/NewsService';
 import { useNewsStore } from '@/stores/news';
 import { Check, TriangleAlert } from 'lucide-vue-next';
 import { storeToRefs } from 'pinia';
 import { computed, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 const store = useNewsStore()
 const { news } = storeToRefs(store)
 
@@ -43,6 +45,26 @@ watch(itemsPerPage, () => {
   currentPage.value = 1;
 });
 
+const router = useRouter()
+
+const handleDeleteComment = async (commentId: number) => {
+  try {
+    await NewsService.deleteComment(commentId)
+    
+    // Remove from local state
+    if (news.value?.comments) {
+      const commentIndex = news.value.comments.findIndex(comment => comment.id === commentId)
+      if (commentIndex !== -1) {
+        news.value.comments.splice(commentIndex, 1)
+      }
+    }
+    
+  } catch (error) {
+    console.error('Failed to delete comment:', error)
+    router.push({ name: 'network-error-view' })
+  }
+}
+
 </script>
 
 <template>
@@ -79,7 +101,7 @@ watch(itemsPerPage, () => {
 
     <div v-if="news && news.comments">
       <CommentItem 
-        v-for="comment in paginatedComments" :key="comment.id" :comment="comment"
+        v-for="comment in paginatedComments" :key="comment.id" :comment="comment" @delete-comment="handleDeleteComment"
       />
     </div>
   </div>

@@ -27,5 +27,8 @@ export default {
   },
   saveNews(news: {topic: string ; shortDetail: string; fullDetail: string; reporter: string; reportDate: string; imageUrl?: string}) {
     return apiclient.post('/news', news);
-  }
+  },
+  deleteComment(commentId: number) {
+    return apiclient.delete(`/comments/${commentId}`);
+  },
 };

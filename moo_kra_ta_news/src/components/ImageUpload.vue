@@ -21,7 +21,7 @@ const authStore = useAuthStore()
 const convertStringToMedia = (str: string[]): MediaItem[] => {
     if (str.length === 0) return []
     return [{
-        name: str[0] // Only use the first item
+        name: str[0] 
     }]
 }
 
