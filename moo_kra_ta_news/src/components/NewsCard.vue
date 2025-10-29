@@ -62,9 +62,8 @@ console.log('Is Admin:', authStore.isAdmin)
 
 <template>
   <div class="relative">
-    <!-- ✅ ปุ่มลบอยู่นอก RouterLink -->
     <div class="absolute top-2 right-2 z-10">
-      <DeleteButton 
+      <DeleteButton v-if="authStore.isAdmin"
         @confirm="deleteNews" 
         :show-text="false" 
         size="sm" 
@@ -72,7 +71,6 @@ console.log('Is Admin:', authStore.isAdmin)
       />
     </div>
 
-    <!-- ✅ RouterLink แค่ส่วนที่คลิกได้ -->
     <RouterLink :to="{ name: 'news-detail-view', params: { id: news.id } }">
       <div class="cursor-pointer flex flex-col w-full gap-3.5 hover:scale-101">
         <div class="relative">
@@ -106,7 +104,6 @@ console.log('Is Admin:', authStore.isAdmin)
       </div>
     </RouterLink>
 
-    <!-- ✅ DeleteConfirmation -->
     <DeleteConfirmation
       :is-open="showDeleteModal"
       topic-type="news"

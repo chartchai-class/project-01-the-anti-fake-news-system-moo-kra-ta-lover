@@ -5,6 +5,7 @@ import { Check, TriangleAlert } from 'lucide-vue-next'
 import { computed, ref } from 'vue'
 import DeleteConfirmation from '@/components/DeleteConfirmation.vue'
 import DeleteButton from '@/components/DeleteButton.vue'
+import { useAuthStore } from '@/stores/auth'
 
 const props = defineProps<{
   comment: Comment
@@ -30,6 +31,8 @@ const handleConfirmDelete = () => {
 const handleCancelDelete = () => {
   showDeleteModal.value = false
 }
+
+const authStore = useAuthStore()
 </script>
 
 <template>
@@ -76,7 +79,7 @@ const handleCancelDelete = () => {
           </div>
 
           <!-- Delete Button -->
-          <DeleteButton
+          <DeleteButton v-if="authStore.isAdmin"
             @confirm="deleteComment"
             size="sm"
             title="Delete comment"
