@@ -31,4 +31,11 @@ export default {
   deleteComment(commentId: number) {
     return apiclient.delete(`/comments/${commentId}`);
   },
+  deleteNews(newsId: number) {
+  return apiclient.delete(`/news/${newsId}`, {
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+    }
+  });
+},
 };

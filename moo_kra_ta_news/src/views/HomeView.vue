@@ -96,6 +96,16 @@ const toggleDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value;
 };
 
+const handleDeleteNews = async (newsId: number) => {
+  try {
+    await NewsService.deleteNews(newsId)
+    newsFilterStore.allNews = newsFilterStore.allNews.filter(news => news.id !== newsId)
+  } catch (error) {
+    console.error('Failed to delete news:', error)
+    alert('Failed to delete news')
+  }
+}
+
 </script>
 
 <template>
@@ -182,7 +192,7 @@ const toggleDropdown = () => {
 
     <div v-if="paginatedNews.length > 0"
       class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 w-full">
-      <NewsCard v-for="newsItem in paginatedNews" :key="newsItem.id" :news="newsItem" />
+      <NewsCard v-for="newsItem in paginatedNews" :key="newsItem.id" :news="newsItem" @delete-news="handleDeleteNews"/>
     </div>
 
 

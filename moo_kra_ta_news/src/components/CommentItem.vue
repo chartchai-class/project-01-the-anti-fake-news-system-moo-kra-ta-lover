@@ -4,6 +4,7 @@ import { getUserProfile } from '@/utils/userProfile'
 import { Check, TriangleAlert } from 'lucide-vue-next'
 import { computed, ref } from 'vue'
 import DeleteConfirmation from '@/components/DeleteConfirmation.vue'
+import DeleteButton from '@/components/DeleteButton.vue'
 
 const props = defineProps<{
   comment: Comment
@@ -75,30 +76,11 @@ const handleCancelDelete = () => {
           </div>
 
           <!-- Delete Button -->
-          <button
-            @click="deleteComment"
-            class="group relative h-7 px-3 sm:h-9 sm:px-4 bg-white border border-red-200 text-red-500 hover:bg-red-500 hover:text-white rounded-2xl transition-all duration-300 text-xs sm:text-sm font-medium flex items-center gap-2 shadow-sm hover:shadow-lg hover:scale-105 active:scale-95"
+          <DeleteButton
+            @confirm="deleteComment"
+            size="sm"
             title="Delete comment"
-          >
-            <div class="relative">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="14"
-                height="14"
-                fill="currentColor"
-                class="bi bi-trash transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12"
-                viewBox="0 0 16 16"
-              >
-                <path
-                  d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"
-                />
-                <path
-                  d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"
-                />
-              </svg>
-            </div>
-            <span class="hidden sm:inline font-medium transition-colors duration-300">Delete</span>
-          </button>
+          />
         </div>
       </div>
 
@@ -124,6 +106,7 @@ const handleCancelDelete = () => {
     <!-- Delete Confirmation -->
     <DeleteConfirmation
       :is-open="showDeleteModal"
+      topic-type="comment"
       @confirm="handleConfirmDelete"
       @cancel="handleCancelDelete"
     />

@@ -1,7 +1,10 @@
 <script setup lang="ts">
-defineProps<{
+interface Props {
   isOpen: boolean
-}>()
+  topicType?: string 
+}
+
+const { isOpen, topicType = 'comment' } = defineProps<Props>()
 
 const emit = defineEmits<{
   confirm: []
@@ -31,9 +34,9 @@ const onCancel = () => emit('cancel')
         </div>
       </div>
 
-      <h3 class="text-lg font-semibold text-center text-gray-900 mb-2">Delete Comment?</h3>
+      <h3 class="text-lg font-semibold text-center text-gray-900 mb-2">Delete {{ topicType }}?</h3>
       <p class="text-gray-600 text-center mb-6">
-        Are you sure you want to delete this comment?
+        Are you sure you want to delete this {{ topicType }}?
       </p>
 
       <!-- Buttons -->
