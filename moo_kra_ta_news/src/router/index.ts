@@ -13,7 +13,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '../views/auth/LoginView.vue'
 import RegisterView from '../views/auth/RegisterView.vue'
 import HomeView from '../views/HomeView.vue'
-
+import AdminUserManagementView from '@/views/AdminUserManagementView.vue'
+import AdminHistoryManagementView from '@/views/AdminHistoryManagementView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -101,6 +102,16 @@ const router = createRouter({
       path: '/UserProfile',
       name: 'User-profile-view',
       component: UserProfileView,
+    },
+    {
+      path: '/adminUserManagement',
+      name: 'admin-user-management',
+      component: AdminUserManagementView,
+    },
+    {
+      path: '/adminHistoryManagement',
+      name: 'admin-history-management',
+      component: AdminHistoryManagementView,
     },
   ],
   scrollBehavior(to, from, savedPosition) {
