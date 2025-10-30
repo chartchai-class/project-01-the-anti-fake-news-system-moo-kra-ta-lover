@@ -1,14 +1,15 @@
 <script setup lang="ts">
+import DeleteButton from '@/components/DeleteButton.vue'
+import DeleteConfirmation from '@/components/DeleteConfirmation.vue'
+import { useAuthStore } from '@/stores/auth'
 import type { Comment } from '@/types'
 import { getUserProfile } from '@/utils/userProfile'
 import { Check, TriangleAlert } from 'lucide-vue-next'
 import { computed, ref } from 'vue'
-import DeleteConfirmation from '@/components/DeleteConfirmation.vue'
-import DeleteButton from '@/components/DeleteButton.vue'
-import { useAuthStore } from '@/stores/auth'
 
 const props = defineProps<{
   comment: Comment
+  showDeleteButton: boolean 
 }>()
 
 const emit = defineEmits<{
@@ -79,7 +80,7 @@ const authStore = useAuthStore()
           </div>
 
           <!-- Delete Button -->
-          <DeleteButton v-if="authStore.isAdmin"
+          <DeleteButton v-if="authStore.isAdmin && showDeleteButton"
             @confirm="deleteComment"
             size="sm"
             title="Delete comment"

@@ -101,7 +101,7 @@ const handleDeleteComment = async (commentId: number) => {
 
     <div v-if="news && news.comments">
       <CommentItem 
-        v-for="comment in paginatedComments" :key="comment.id" :comment="comment" @delete-comment="handleDeleteComment"
+        v-for="comment in paginatedComments" :key="comment.id" :comment="comment" @delete-comment="handleDeleteComment" :showDeleteButton="true"
       />
     </div>
   </div>
