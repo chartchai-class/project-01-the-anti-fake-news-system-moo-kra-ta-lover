@@ -27,5 +27,36 @@ export default {
   },
   saveNews(news: {topic: string ; shortDetail: string; fullDetail: string; reporter: string; reportDate: string; imageUrl?: string}) {
     return apiclient.post('/news', news);
+  },
+  deleteComment(commentId: number) {
+    return apiclient.delete(`/comments/${commentId}`);
+  },
+  deleteNews(newsId: number) {
+  return apiclient.delete(`/news/${newsId}`, {
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+    }
+  });
+},
+getAllUsers() {
+    return apiclient.get('/users', {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+      }
+    });
+  },
+  promoteToMember(userId: number) {
+    return apiclient.put(`/users/${userId}/promote-to-member`, {}, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+      }
+    });
+  },
+  demoteToReader(userId: number) {
+    return apiclient.put(`/users/${userId}/demote-to-reader`, {}, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+      }
+    });
   }
 };

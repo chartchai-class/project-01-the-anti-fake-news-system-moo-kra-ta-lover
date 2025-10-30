@@ -2,6 +2,7 @@
 import { useAuthStore } from '@/stores/auth';
 import { getUserProfile } from '@/utils/userProfile';
 import { computed } from 'vue';
+import AdminDropdown from '@/components/AdminDropdown.vue';
 
 const authStore = useAuthStore()
 
@@ -9,10 +10,19 @@ const user = computed(() => authStore.user)
 
 const userProfile = computed(() => getUserProfile(authStore.currentUserFirstName|| ''));
 
+const handleAdminItemClick = (item: string) => {
+  console.log('Admin item clicked:', item);
+};
+
 </script>
 <template>
     <div class="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-10">
-    <div class="max-w-2xl w-full bg-white rounded-2xl shadow-lg p-8">
+    <div class="max-w-2xl w-full bg-white rounded-2xl shadow-lg p-8 relative">
+
+     <div v-if="authStore.isAdmin" class="absolute top-9 right-10">
+        <AdminDropdown @item-click="handleAdminItemClick" />
+      </div>
+
       <div class="flex items-center space-x-6 border-b pb-6">
         <img
           v-if="user?.image"
@@ -69,7 +79,7 @@ const userProfile = computed(() => getUserProfile(authStore.currentUserFirstName
         >
           Sign Out
         </button>
-      </div>
+      </div> 
     </div>
   </div>
 </template>
