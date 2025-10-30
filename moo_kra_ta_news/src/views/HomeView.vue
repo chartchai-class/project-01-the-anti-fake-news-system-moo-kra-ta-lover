@@ -1,12 +1,12 @@
 <!-- HomePage.vue -->
 <script setup lang="ts">
+import PaginationControls from '@/components/home-page/HomePagination.vue';
 import NavTab from '@/components/home-page/NavTab.vue';
 import NewsCard from '@/components/NewsCard.vue';
 import NewsService from '@/services/NewsService';
 import { useNewsFilterStore, type FilterType } from '@/stores/newsFilter';
 import { computed, onMounted, ref } from 'vue';
 import NewsCarousel from '../components/home-page/NewsCarousel.vue';
-import PaginationControls from '@/components/home-page/HomePagination.vue';
 
 // Use the store
 const newsFilterStore = useNewsFilterStore();
@@ -110,7 +110,7 @@ const handleDeleteNews = async (newsId: number) => {
 
     <div v-if="paginatedNews.length > 0"
       class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 w-full">
-      <NewsCard v-for="newsItem in paginatedNews" :key="newsItem.id" :news="newsItem" @delete-news="handleDeleteNews"/>
+      <NewsCard v-for="newsItem in paginatedNews" :key="newsItem.id" :news="newsItem" @delete-news="handleDeleteNews" :showDeleteButton="true"/>
     </div>
 
 
