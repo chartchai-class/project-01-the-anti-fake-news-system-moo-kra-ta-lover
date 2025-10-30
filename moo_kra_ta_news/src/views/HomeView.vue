@@ -2,6 +2,7 @@
 <script setup lang="ts">
 import PaginationControls from '@/components/home-page/HomePagination.vue';
 import NavTab from '@/components/home-page/NavTab.vue';
+import SearchInput from '@/components/home-page/SearchInput.vue';
 import NewsCard from '@/components/NewsCard.vue';
 import NewsService from '@/services/NewsService';
 import { useNewsFilterStore, type FilterType } from '@/stores/newsFilter';
@@ -84,6 +85,8 @@ const handleDeleteNews = async (newsId: number) => {
     </div>
 
     <NewsCarousel :news="newsFilterStore.allNews" />
+
+    <SearchInput />
 
     <div class="divide-x-2 divide-neutral-200 flex gap-3">
       <NavTab text="All" :isActive="activeFilter === 'all'" @click="handleTabClick('all')" />

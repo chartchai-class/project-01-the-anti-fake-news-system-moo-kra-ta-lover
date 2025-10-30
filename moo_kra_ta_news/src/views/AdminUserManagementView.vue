@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useAuthStore } from '@/stores/auth'
+// import { useAuthStore } from '@/stores/auth'
 import NewsService from '@/services/NewsService'
 import UserRoleDropdown from '@/components/UserRoleDropdown.vue'
 import type { User } from '@/types'

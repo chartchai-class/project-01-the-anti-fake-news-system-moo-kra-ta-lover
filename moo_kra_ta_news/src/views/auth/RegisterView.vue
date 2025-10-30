@@ -42,14 +42,14 @@ const onSubmit = handleSubmit((values) => {
   authStore.register(values.email, values.firstName, values.lastName,values.password,values.image)
   .then(() => {
     console.log('Register successful')
-    router.push({ name: 'login' })   
+    router.push({ name: 'login' })
   })
   .catch((error) => {
     messageStore.updateMessage('Register failed. Please try again Later.')
     setTimeout(() => {
       messageStore.resetMessage()
     }, 3000)
-    console.log('Register failed', error) 
+    console.log('Register failed', error)
   });
 })
 
@@ -92,6 +92,10 @@ watch(image, (newVal) => {
 <template>
   <div class="mx-auto max-w-2xl">
     <form @submit.prevent='onSubmit'>
+      <div class="sm:max-w-sm flex flex-col items-start">
+      <img class="h-12" src="../../assets/logo.png" alt="Your Company" />
+      <h2 class="mb-8 mt-3 text-2xl/9 font-bold tracking-tight text-gray-900">Create new account</h2>
+    </div>
       <div>
         <h2 class="text-base/7 font-semibold text-gray-900">Profile</h2>
         <p class="mt-2 text-sm/6 text-gray-600">This information will be displayed publicly so be careful what you
