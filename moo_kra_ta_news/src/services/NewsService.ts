@@ -1,4 +1,4 @@
-import type {  } from '@/types';
+import type { } from '@/types';
 import apiclient from './AxiosClient';
 
 
@@ -30,6 +30,12 @@ export default {
   },
   deleteComment(commentId: number) {
     return apiclient.delete(`/comments/${commentId}`);
+  },
+  getAdminNews(){
+    return apiclient.get('/admin/news');
+  },
+  getAdminComments(){
+    return apiclient.get('/admin/comments');
   },
   deleteNews(newsId: number) {
   return apiclient.delete(`/news/${newsId}`, {
