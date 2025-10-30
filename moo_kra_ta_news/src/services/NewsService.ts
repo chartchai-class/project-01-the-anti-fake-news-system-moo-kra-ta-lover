@@ -38,4 +38,25 @@ export default {
     }
   });
 },
+getAllUsers() {
+    return apiclient.get('/users', {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+      }
+    });
+  },
+  promoteToMember(userId: number) {
+    return apiclient.put(`/users/${userId}/promote-to-member`, {}, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+      }
+    });
+  },
+  demoteToReader(userId: number) {
+    return apiclient.put(`/users/${userId}/demote-to-reader`, {}, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+      }
+    });
+  }
 };
