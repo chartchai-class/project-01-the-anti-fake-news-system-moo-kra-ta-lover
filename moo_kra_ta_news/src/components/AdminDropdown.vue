@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
-import { RouterLink } from 'vue-router'
+import { onMounted, onUnmounted, ref } from 'vue';
+import { RouterLink } from 'vue-router';
 
 interface Props {
   position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'
@@ -126,7 +126,7 @@ onUnmounted(() => {
 
         <!-- History -->
         <RouterLink
-          to="/"
+          to="adminHistoryManagement"
           @click="() => handleItemClick('history')"
           class="group flex items-center gap-3 px-3 py-2.5 text-sm text-gray-700 rounded-md hover:bg-blue-50 hover:text-blue-700 transition-colors duration-150"
         >
