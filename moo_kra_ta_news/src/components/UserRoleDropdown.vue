@@ -1,13 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
-
-interface User {
-  id: number
-  firstname: string
-  lastname: string
-  email: string
-  roles: string[]
-}
+import type { User } from '@/types'
 
 interface Props {
   user: User
@@ -31,7 +24,6 @@ const isAdmin = (user: User) => {
   return user.roles.includes('ROLE_ADMIN')
 }
 
-// Helper functions for UI
 const getRoleColor = (user: User) => {
   if (isAdmin(user)) return 'bg-purple-500'
   if (isMember(user)) return 'bg-green-500'
@@ -117,7 +109,7 @@ onUnmounted(() => {
               <div class="w-2 h-2 rounded-full bg-green-500"></div>
               <div>
                 <p class="font-medium">Member</p>
-                <p class="text-xs text-gray-500">Can create content</p>
+                <p class="text-xs text-gray-500">Can create news articles</p>
               </div>
             </div>
             <svg

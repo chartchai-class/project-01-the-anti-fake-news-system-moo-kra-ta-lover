@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
-import NewsService from '@/services/NewsService' // ADD THIS IMPORT
+import NewsService from '@/services/NewsService'
 import UserRoleDropdown from '@/components/UserRoleDropdown.vue'
 import type { User } from '@/types'
 import { useRouter } from 'vue-router'
@@ -160,7 +160,6 @@ const demoteToReader = async (userId: number) => {
                 <td class="px-6 py-4 whitespace-nowrap">
                   <div class="flex items-center">
                     <div class="flex-shrink-0">
-                      <!-- Show user image if available, otherwise show initials -->
                       <img
                         v-if="user?.image"
                         :src="user.image"
@@ -207,7 +206,6 @@ const demoteToReader = async (userId: number) => {
                   </div>
                 </td>
 
-                <!-- Actions -->
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                   <UserRoleDropdown
                     :user="user"
