@@ -1,28 +1,48 @@
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import NewsService from '@/services/NewsService'
-import BaseInput from './BaseInput.vue'
-import type { News } from '@/types' // Make sure to import
-import { useNewsStore } from '@/stores/news'
+import NewsService from '@/services/NewsService';
+import { useAuthStore } from '@/stores/auth';
+import { useNewsStore } from '@/stores/news';
+import type { News } from '@/types';
+import { useField, useForm } from 'vee-validate';
+import { computed, onMounted, ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import * as yup from 'yup';
+import BaseInput from './BaseInput.vue';
+import CommentImageUpload from './CommentImageUpload.vue';
 
 const route = useRoute()
 const router = useRouter()
 const newsId = Number(route.params.id)
 const newsStore = useNewsStore()
+const authStore = useAuthStore()
 
-// Fix: Add proper type
 const news = ref<News | null>(null)
 const isLoading = ref(false)
+const alertMessage = ref('')
 
 type VoteType = 'Real' | 'Fake'
 
-const comment = ref({
-  user: '',
-  vote: 'Real' as VoteType,
-  comment: '',
-  imageUrls: [] as string[],
+// Validation schema
+const validationSchema = yup.object({
+  vote: yup.string().oneOf(['Real', 'Fake']).required('Vote is required'),
+  comment: yup.string().required('Comment is required').min(1, 'Comment cannot be empty'),
+  imageUrls: yup.array().of(yup.string())
 })
+
+// Setup form with vee-validate
+const { errors, handleSubmit, resetForm } = useForm({
+  validationSchema,
+  initialValues: {
+    vote: 'Real' as VoteType,
+    comment: '',
+    imageUrls: [] as string[]
+  }
+})
+
+// Setup fields
+const { value: vote } = useField<VoteType>('vote')
+const { value: comment } = useField<string>('comment')
+const { value: imageUrls } = useField<string[]>('imageUrls')
 
 // Fetch news
 onMounted(() => {
@@ -36,53 +56,53 @@ onMounted(() => {
     })
 })
 
-// Save comment
-function saveComment() {
-  if (!comment.value.user.trim()) return showAlert('⚠️ Please enter your name.')
-  if (!comment.value.comment.trim()) return showAlert('⚠️ Please write a comment.')
+// Save comment with vee-validate
+const onSubmit = handleSubmit((values) => {
   isLoading.value = true
 
-  NewsService.saveComment(newsId, comment.value)
+  const commentData = {
+    user: { id: authStore.user?.id },
+    vote: values.vote,
+    comment: values.comment,
+    imageUrls: values.imageUrls
+  }
+
+  console.log('Sending comment', {
+    newsId,
+    comment: commentData
+  })
+
+  NewsService.saveComment(newsId, commentData)
     .then((response) => {
-      // Fix: Check if news exists and has comments
       if (news.value) {
         news.value.comments.push(response.data)
       }
 
-    //   Update the store if needed
       if (newsStore.news) {
         newsStore.news.comments.push(response.data)
       }
 
       // Reset form
-      comment.value = {
-        user: '',
-        vote: 'Real' as VoteType,
-        comment: '',
-        imageUrls: [],
-      }
+      resetForm()
       showAlert('✅ Comment posted!')
+      
+      router.push({ 
+        name: 'news-detail-view', 
+        params: { id: newsId.toString() } 
+      }).then(() => {
+        window.location.reload()
+      })
     })
     .catch((error) => {
       console.error('Failed to save comment:', error)
-      router.push({ name: 'network-error-view' })
+      showAlert('❌ Failed to post comment. Please try again.')
+      // Optionally navigate to error page
+      // router.push({ name: 'network-error-view' })
     })
     .finally(() => {
       isLoading.value = false
     })
-}
-
-// For single image URL input
-const singleImageUrl = computed({
-  get() {
-    return comment.value.imageUrls[0] || ''
-  },
-  set(value: string) {
-    comment.value.imageUrls = value ? [value] : []
-  },
 })
-
-const alertMessage = ref('')
 
 function showAlert(message: string) {
   alertMessage.value = message
@@ -101,11 +121,27 @@ const fakeVotes = computed(() => {
   return news.value?.comments?.filter(comment => comment.vote === 'Fake').length || 0
 })
 
+// Fade animation for alerts
+const showFade = ref(false)
+
+watch(alertMessage, (newVal) => {
+  if (newVal) {
+    showFade.value = false
+    setTimeout(() => {
+      showFade.value = true
+      setTimeout(() => {
+        alertMessage.value = ''
+        showFade.value = false
+      }, 1000)
+    }, 2000)
+  }
+})
 </script>
 
 <template>
   <div class="max-w-4xl mx-auto p-6">
-    <div v-if="alertMessage" class="mb-4 p-3 rounded-lg bg-red-100 text-red-700 font-medium">
+    <div v-if="alertMessage" 
+      :class="['mb-4 p-3 rounded-lg bg-red-100 text-red-700 font-medium', showFade ? 'animate-fadeOut' : 'animate-pop']">
       {{ alertMessage }}
     </div>
 
@@ -127,31 +163,42 @@ const fakeVotes = computed(() => {
       </div>
     </div>
 
-    <form @submit.prevent="saveComment" class="space-y-3">
-      <BaseInput v-model="comment.user" label="Your Name" placeholder="Enter your name" />
-
+    <form @submit.prevent="onSubmit" class="space-y-3">
       <div class="flex gap-4">
         <button
           type="button"
-          @click="comment.vote = 'Real'"
-          :class="comment.vote === 'Real' ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-600'"
+          @click="vote = 'Real'"
+          :class="vote === 'Real' ? 'bg-green-600 text-white' : 'bg-gray-200 text-gray-600'"
           class="flex-1 py-2 rounded-md"
         >
           Real
         </button>
         <button
           type="button"
-          @click="comment.vote = 'Fake'"
-          :class="comment.vote === 'Fake' ? 'bg-red-600 text-white' : 'bg-gray-200 text-gray-600'"
+          @click="vote = 'Fake'"
+          :class="vote === 'Fake' ? 'bg-red-600 text-white' : 'bg-gray-200 text-gray-600'"
           class="flex-1 py-2 rounded-md"
         >
           Fake
         </button>
       </div>
+      <div v-if="errors.vote" class="text-red-600 text-sm">{{ errors.vote }}</div>
 
-      <BaseInput v-model="comment.comment" label="Comment" placeholder="Write your comment" />
+      <div>
+        <BaseInput v-model="comment" label="Comment" placeholder="Write your comment" />
+        <div v-if="errors.comment" class="text-red-600 text-sm mt-1">{{ errors.comment }}</div>
+      </div>
 
-      <BaseInput v-model="singleImageUrl" label="Image URL (optional)" placeholder="https://..." />
+      <div class="col-span-full">
+        <div class="mt-2 flex items-center gap-x-3">
+          <div>
+            <label class="block text-sm font-semibold text-gray-800 mb-3">
+              Upload a Comment Image
+            </label>
+            <CommentImageUpload v-model="imageUrls"/>
+          </div>
+        </div>
+      </div>
 
       <button
         type="submit"

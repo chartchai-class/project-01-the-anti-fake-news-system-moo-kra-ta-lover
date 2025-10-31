@@ -11,7 +11,7 @@ export interface News{
 
 export interface Comment {
     id: number
-    user: string
+    user: CommentUser
     vote: "Fake" | "Real"
     comment: string
     imageUrls?: string[]
@@ -36,4 +36,10 @@ export interface User {
 
 export interface MessageState {
     message: string
+}
+
+export interface CommentUser {
+    id: number
+    firstname: string
+    lastname: string
 }

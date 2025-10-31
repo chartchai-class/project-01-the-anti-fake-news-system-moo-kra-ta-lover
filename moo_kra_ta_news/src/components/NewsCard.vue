@@ -12,7 +12,7 @@ const authStore = useAuthStore()
 
 const props = defineProps<{
   news: News
-  showDeleteButton: boolean 
+  showDeleteButton: boolean
 }>()
 
 // Debug: Log the news data
@@ -28,11 +28,17 @@ const fakeComments = computed(() => {
   return props.news.comments?.filter((comment) => comment.vote === 'Fake').length || 0
 })
 
-const imageSrc = computed(() => {
-  const img = props.news.imageUrl
-  if (Array.isArray(img)) return img[0] ?? ''
-  if (typeof img === 'string') return img
-  return ''
+const totalComments = computed(() => {
+  return (props.news.comments?.length || 0)
+})
+
+const isUnvoted = computed(() => {
+  return totalComments.value === 0
+})
+
+const statusText = computed(() => {
+  if (isUnvoted.value) return 'Unvoted'
+  return realComments.value > fakeComments.value ? 'Trusted' : 'Fake'
 })
 
 const emit = defineEmits<{
@@ -64,10 +70,10 @@ console.log('Is Admin:', authStore.isAdmin)
   <div class="relative">
     <div class="absolute top-2 right-2 z-10">
       <DeleteButton v-if="authStore.isAdmin && showDeleteButton"
-        @confirm="deleteNews" 
-        :show-text="false" 
-        size="sm" 
-        title="Delete news" 
+        @confirm="deleteNews"
+        :show-text="false"
+        size="sm"
+        title="Delete news"
       />
     </div>
 
@@ -82,7 +88,8 @@ console.log('Is Admin:', authStore.isAdmin)
           />
           <StatusCard
             :isReal="realComments > fakeComments"
-            :text="realComments > fakeComments ? 'Trusted' : 'Fake'"
+            :isUnvoted="isUnvoted"
+            :text="statusText"
           />
         </div>
 

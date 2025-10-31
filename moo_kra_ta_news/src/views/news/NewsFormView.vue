@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { ref, computed, watch } from 'vue'
-import { useRouter } from 'vue-router'
-import BaseInput from '@/components/BaseInput.vue'
-import type { News } from '@/types'
 import ImageUpload from '@/components/ImageUpload.vue'
 import NewsService from '@/services/NewsService'
 import { useAuthStore } from '@/stores/auth'
+import { useField, useForm } from 'vee-validate'
+import { ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
+import * as yup from 'yup'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -20,63 +20,74 @@ const showNotification = (message: string) => {
     show: true,
     message,
   }
-  
+
   setTimeout(() => {
     notification.value.show = false
   }, 6000)
 }
 
-const news = ref<News>({
-  id: 0,
-  topic: '',
-  shortDetail: '',
-  fullDetail: '',
-  reporter: '',
-  reportDate: '',
-  imageUrl: '',
-  comments: [],
+// Validation Schema
+const validationSchema = yup.object({
+  topic: yup
+    .string()
+    .required('News title is required')
+    .min(5, 'Title must be at least 5 characters')
+    .max(200, 'Title must not exceed 200 characters'),
+  shortDetail: yup
+    .string()
+    .required('Short summary is required')
+    .min(10, 'Summary must be at least 10 characters')
+    .max(300, 'Summary must not exceed 300 characters'),
+  fullDetail: yup
+    .string()
+    .required('Full details are required')
+    .min(50, 'Full details must be at least 50 characters'),
+  imageUrl: yup
+    .string()
+    .required('News image is required')
 })
 
-// Form validation 
-const isFormValid = computed(() => {
-  return (
-    news.value.topic.trim().length > 0 &&
-    news.value.shortDetail.trim().length >= 10 &&
-    news.value.shortDetail.trim().length <= 300 &&
-    news.value.fullDetail.trim().length >= 50 &&
-    singleImageArray.value.length > 0 &&
-    singleImageArray.value[0].trim().length > 0 
-  )
+// Setup Vee-Validate form
+const { errors, handleSubmit, meta } = useForm({
+  validationSchema,
+  initialValues: {
+    topic: '',
+    shortDetail: '',
+    fullDetail: '',
+    imageUrl: '',
+  },
 })
+
+// Form fields
+const { value: topic } = useField<string>('topic')
+const { value: shortDetail } = useField<string>('shortDetail')
+const { value: fullDetail } = useField<string>('fullDetail')
+const { value: imageUrl } = useField<string>('imageUrl')
 
 // Single image array for the upload component
 const singleImageArray = ref<string[]>([])
 
 watch(singleImageArray, (newImages) => {
   if (newImages.length > 0) {
-    news.value.imageUrl = newImages[0]
+    imageUrl.value = newImages[0]
     console.log('Image selected:', newImages[0])
   } else {
-    news.value.imageUrl = ''
+    imageUrl.value = ''
   }
 }, { immediate: true })
 
-// Form submission
-async function saveNews() {
+// Form submission with validation
+const onSubmit = handleSubmit(async (values) => {
   try {
-
     const userFullName = `${authStore.user?.firstname || ''} ${authStore.user?.lastname || ''}`.trim()
-    news.value.reporter = userFullName || 'Anonymous'
-    
-    news.value.reportDate = new Date().toISOString()
 
     const newsData = {
-      topic: news.value.topic,
-      shortDetail: news.value.shortDetail,
-      fullDetail: news.value.fullDetail,
-      reporter: news.value.reporter,
-      reportDate: news.value.reportDate,
-      imageUrl: news.value.imageUrl
+      topic: values.topic,
+      shortDetail: values.shortDetail,
+      fullDetail: values.fullDetail,
+      reporter: userFullName || 'Anonymous',
+      reportDate: new Date().toISOString(),
+      imageUrl: values.imageUrl
     }
 
     console.log('Sending to backend:', newsData)
@@ -85,28 +96,23 @@ async function saveNews() {
     console.log('News saved successfully:', response)
 
     showNotification('🎉 News posted successfully! Redirecting to home page...')
-    
+
     setTimeout(() => {
-      news.value = {
-        id: 0,
-        topic: '',
-        shortDetail: '',
-        fullDetail: '',
-        reporter: '',
-        reportDate: '',
-        imageUrl: '',
-        comments: [],
-      }
+      // Reset form
+      topic.value = ''
+      shortDetail.value = ''
+      fullDetail.value = ''
+      imageUrl.value = ''
       singleImageArray.value = []
-      
+
       router.push('/')
     }, 2000)
-    
+
   } catch (error) {
     console.error('Error saving news:', error)
     router.push({ name: 'network-error-view' })
   }
-}
+})
 </script>
 
 <template>
@@ -159,14 +165,23 @@ async function saveNews() {
 
     <!-- Form Section -->
     <div class="bg-white shadow-lg border border-gray-100 rounded-2xl p-6 sm:p-8">
-      <form @submit.prevent="saveNews" class="space-y-8">
+      <form @submit="onSubmit" class="space-y-8">
         <!-- News Title -->
         <div>
-          <BaseInput
-            v-model="news.topic"
-            label="News Title"
+          <label for="topic" class="block text-sm font-semibold text-gray-800 mb-3">
+            News Title <span class="text-red-500">*</span>
+          </label>
+          <input
+            id="topic"
+            v-model="topic"
+            type="text"
             placeholder="Enter a clear and concise title"
+            class="w-full px-4 py-3 border rounded-xl bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            :class="errors.topic ? 'border-red-500' : 'border-gray-300'"
           />
+          <p v-if="errors.topic" class="mt-2 text-sm text-red-600">
+            {{ errors.topic }}
+          </p>
         </div>
 
         <!-- Short Summary -->
@@ -176,16 +191,18 @@ async function saveNews() {
           </label>
           <textarea
             id="summary"
-            v-model="news.shortDetail"
+            v-model="shortDetail"
             rows="3"
-            required
             maxlength="300"
             placeholder="Write a brief summary (10–300 characters)"
-            class="w-full px-4 py-3 border border-gray-300 rounded-xl bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-vertical"
+            class="w-full px-4 py-3 border rounded-xl bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-vertical"
+            :class="errors.shortDetail ? 'border-red-500' : 'border-gray-300'"
           ></textarea>
-          <div class="flex justify-between text-xs text-gray-500 mt-2">
-            <span>Minimum 10 characters</span>
-            <span>{{ news.shortDetail.length }}/300</span>
+          <div class="flex justify-between text-xs mt-2">
+            <span :class="errors.shortDetail ? 'text-red-600' : 'text-gray-500'">
+              {{ errors.shortDetail || 'Minimum 10 characters' }}
+            </span>
+            <span class="text-gray-500">{{ shortDetail?.length || 0 }}/300</span>
           </div>
         </div>
 
@@ -196,35 +213,39 @@ async function saveNews() {
           </label>
           <textarea
             id="details"
-            v-model="news.fullDetail"
+            v-model="fullDetail"
             rows="6"
-            required
-            minlength="50"
             placeholder="Provide complete details about the news (minimum 50 characters)"
-            class="w-full px-4 py-3 border border-gray-300 rounded-xl bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-vertical"
+            class="w-full px-4 py-3 border rounded-xl bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-vertical"
+            :class="errors.fullDetail ? 'border-red-500' : 'border-gray-300'"
           ></textarea>
-          <div class="flex justify-between text-xs text-gray-500 mt-2">
-            <span>Minimum 50 characters</span>
-            <span>{{ news.fullDetail.length }}+ characters</span>
+          <div class="flex justify-between text-xs mt-2">
+            <span :class="errors.fullDetail ? 'text-red-600' : 'text-gray-500'">
+              {{ errors.fullDetail || 'Minimum 50 characters' }}
+            </span>
+            <span class="text-gray-500">{{ fullDetail?.length || 0 }}+ characters</span>
           </div>
         </div>
 
         <!-- Image Upload -->
         <div>
           <label class="block text-sm font-semibold text-gray-800 mb-3">
-            News Image
+            News Image <span class="text-red-500">*</span>
           </label>
-          <ImageUpload 
-    v-model="singleImageArray" 
-    :max-files="1" 
-  />
+          <ImageUpload
+            v-model="singleImageArray"
+            :max-files="1"
+          />
+          <p v-if="errors.imageUrl" class="mt-2 text-sm text-red-600">
+            {{ errors.imageUrl }}
+          </p>
         </div>
 
         <!-- Action Buttons -->
         <div class="flex flex-col sm:flex-row gap-4 pt-4">
           <button
             type="submit"
-            :disabled="!isFormValid"
+            :disabled="!meta.valid"
             class="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold px-6 py-3 rounded-xl transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg shadow-blue-500/25"
           >
             📤 Submit News
