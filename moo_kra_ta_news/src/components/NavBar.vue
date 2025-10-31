@@ -5,7 +5,7 @@ import { computed } from 'vue';
 import { RouterLink } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 import LogoWeb from './LogoWeb.vue';
-import { Menu as MenuIcon } from 'lucide-vue-next';
+import { Menu as MenuIcon, X } from 'lucide-vue-next';
 
 const authStore = useAuthStore()
 
@@ -112,28 +112,39 @@ const userProfile = computed(() => getUserProfile(authStore.currentUserFirstName
 
       <div class="-mr-2 flex md:hidden">
             <!-- Mobile menu button -->
-            <DisclosureButton class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-white/5 hover:text-white focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-indigo-500">
+            <DisclosureButton class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-neutral-100 hover:text-neutral-600">
               <span class="absolute -inset-0.5"></span>
               <span class="sr-only">Open main menu</span>
-              <MenuIcon />
-              <Bars3Icon v-if="!open" class="block size-6" aria-hidden="true" />
-              <XMarkIcon v-else class="block size-6" aria-hidden="true" />
+              <MenuIcon v-if="!open" class="block size-6" aria-hidden="true" />
+              <X v-else class="block size-6" aria-hidden="true" />
             </DisclosureButton>
       </div>
     </nav>
 
-    <DisclosurePanel class="md:hidden">
+    <DisclosurePanel class="md:hidden bg-white border-red/10 border-y">
         <div class="space-y-1 px-2 pb-3 pt-2 sm:px-3">
+          <DisclosureButton class="block rounded-md px-3 py-2 text-base font-medium text-neutral-500 hover:bg-neutral-100 hover:text-black">
+            News
+          </DisclosureButton>
+          <DisclosureButton class="block rounded-md px-3 py-2 text-base font-medium text-neutral-500 hover:bg-neutral-100 hover:text-black">
+            Trusted News
+          </DisclosureButton>
+          <DisclosureButton class="block rounded-md px-3 py-2 text-base font-medium text-neutral-500 hover:bg-neutral-100 hover:text-black">
+            Fake News
+          </DisclosureButton>
           <!-- <DisclosureButton v-for="item in navigation" :key="item.name" as="a" :href="item.href" :class="[item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white', 'block rounded-md px-3 py-2 text-base font-medium']" :aria-current="item.current ? 'page' : undefined">{{ item.name }}</DisclosureButton> -->
         </div>
-        <div class="border-t border-white/10 pb-3 pt-4">
+        <div class="border-t border-red/10 pb-3 pt-4">
           <div class="flex items-center px-5">
             <div class="shrink-0">
-              <img class="size-10 rounded-full outline outline-1 -outline-offset-1 outline-white/10" :src="user.imageUrl" alt="" />
+              <div
+                :class="[userProfile.bgColor, 'size-10 rounded-full flex items-center justify-center text-white text-xl font-semibold']">
+                {{ userProfile.initials }}
+              </div>
             </div>
             <div class="ml-3">
-              <div class="text-base/5 font-medium text-white">[{{ user!.firstname }}]</div>
-              <div class="text-sm font-medium text-gray-400">{{ user!.email }}</div>
+              <div class="text-base/5 font-medium text-black">{{ user!.firstname }} {{ user!.lastname }}</div>
+              <div class="text-sm text-neutral-500">{{ user!.email }}</div>
             </div>
             <button type="button" class="relative ml-auto shrink-0 rounded-full p-1 text-gray-400 hover:text-white focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-indigo-500">
               <span class="absolute -inset-1.5"></span>
@@ -142,10 +153,14 @@ const userProfile = computed(() => getUserProfile(authStore.currentUserFirstName
             </button>
           </div>
           <div class="mt-3 space-y-1 px-2">
-            <!-- <DisclosureButton v-for="item in userNavigation" :key="item.name" as="a" :href="item.href" class="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-white/5 hover:text-white">{{ item.name }}</DisclosureButton> -->
+            <DisclosureButton :as="RouterLink" to="/UserProfile" class="block rounded-md px-3 py-2 text-base text-neutral-500 hover:bg-neutral-100 hover:text-black">
+              User Profile
+            </DisclosureButton>
+            <DisclosureButton as="router-link" @click="authStore.logout" class="block rounded-md px-3 py-2 text-base text-neutral-500 hover:bg-neutral-100 hover:text-black">
+              Sign out
+            </DisclosureButton>
           </div>
         </div>
       </DisclosurePanel>
   </Disclosure>
 </template>
-
