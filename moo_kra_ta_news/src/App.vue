@@ -7,9 +7,15 @@ const token = localStorage.getItem('access_token')
 const user = localStorage.getItem('user')
 
 if (token && user) {
-  authStore.reload(token,JSON.parse(user))
-  console.log('reloaded user from localStorage', authStore.user)
-}else{
+  try {
+    const CurrentUser = JSON.parse(user)
+    authStore.reload(token, CurrentUser)
+    console.log('reloaded user from localStorage', authStore.user)
+  } catch (error) {
+    console.warn('Invalid user data in localStorage:', user ,error)
+    authStore.logout()
+  }
+} else {
   authStore.logout()
 }
 
