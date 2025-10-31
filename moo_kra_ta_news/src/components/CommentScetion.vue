@@ -1,15 +1,19 @@
 <script lang="ts" setup>
-import { ref, computed, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import NewsService from '@/services/NewsService'
-import BaseInput from './BaseInput.vue'
-import type { News } from '@/types' // Make sure to import
-import { useNewsStore } from '@/stores/news'
+import NewsService from '@/services/NewsService';
+import { useAuthStore } from '@/stores/auth';
+import { useNewsStore } from '@/stores/news';
+import type { News } from '@/types'; // Make sure to import
+import { computed, onMounted, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import BaseInput from './BaseInput.vue';
+import CommentImageUpload from './CommentImageUpload.vue';
 
 const route = useRoute()
 const router = useRouter()
 const newsId = Number(route.params.id)
 const newsStore = useNewsStore()
+const authStore = useAuthStore()
+
 
 // Fix: Add proper type
 const news = ref<News | null>(null)
@@ -18,7 +22,7 @@ const isLoading = ref(false)
 type VoteType = 'Real' | 'Fake'
 
 const comment = ref({
-  user: '',
+  user: { id: authStore.user?.id },
   vote: 'Real' as VoteType,
   comment: '',
   imageUrls: [] as string[],
@@ -38,9 +42,13 @@ onMounted(() => {
 
 // Save comment
 function saveComment() {
-  if (!comment.value.user.trim()) return showAlert('⚠️ Please enter your name.')
   if (!comment.value.comment.trim()) return showAlert('⚠️ Please write a comment.')
   isLoading.value = true
+
+  console.log('Sending comment', {
+    newsId,
+    comment: comment.value
+  })
 
   NewsService.saveComment(newsId, comment.value)
     .then((response) => {
@@ -56,12 +64,19 @@ function saveComment() {
 
       // Reset form
       comment.value = {
-        user: '',
+        user:{ id: authStore.user?.id },
         vote: 'Real' as VoteType,
         comment: '',
         imageUrls: [],
       }
       showAlert('✅ Comment posted!')
+      router.push({ 
+        name: 'news-detail-view', 
+        params: { id: newsId.toString() } 
+      }).then(() => {
+        // reload the current route to fetch fresh data
+        window.location.reload()
+      })
     })
     .catch((error) => {
       console.error('Failed to save comment:', error)
@@ -71,16 +86,6 @@ function saveComment() {
       isLoading.value = false
     })
 }
-
-// For single image URL input
-const singleImageUrl = computed({
-  get() {
-    return comment.value.imageUrls[0] || ''
-  },
-  set(value: string) {
-    comment.value.imageUrls = value ? [value] : []
-  },
-})
 
 const alertMessage = ref('')
 
@@ -128,8 +133,6 @@ const fakeVotes = computed(() => {
     </div>
 
     <form @submit.prevent="saveComment" class="space-y-3">
-      <BaseInput v-model="comment.user" label="Your Name" placeholder="Enter your name" />
-
       <div class="flex gap-4">
         <button
           type="button"
@@ -151,7 +154,17 @@ const fakeVotes = computed(() => {
 
       <BaseInput v-model="comment.comment" label="Comment" placeholder="Write your comment" />
 
-      <BaseInput v-model="singleImageUrl" label="Image URL (optional)" placeholder="https://..." />
+      <div class="col-span-full">
+            <div class="mt-2 flex items-center gap-x-3">
+              <div>
+                <label class="block text-sm font-semibold text-gray-800 mb-3">
+                  Upload a Comment Image
+                </label>
+                <CommentImageUpload v-model="comment.imageUrls"/>
+              </div>
+
+            </div>
+          </div>
 
       <button
         type="submit"
