@@ -1,6 +1,7 @@
 import NewsService from '@/services/NewsService'
 import { useAuthStore } from '@/stores/auth'
 import { useNewsStore } from '@/stores/news'
+import { useNewsFilterStore } from '@/stores/newsFilter'
 import UserProfileView from '@/views/auth/UserProfileView.vue'
 import NetworkErrorView from '@/views/NetworkErrorView.vue'
 import NewsCommentView from '@/views/news/CommentView.vue'
@@ -24,33 +25,89 @@ const router = createRouter({
       name: 'home',
       component: HomeView,
       meta: { requiresAuth: true },
+      beforeEnter: async () => {
+        const newsFilterStore = useNewsFilterStore()
+        newsFilterStore.setFilter('all')
+        try {
+          const response = await NewsService.getNews()
+          newsFilterStore.setNews(response.data)
+        } catch (error) {
+          console.error('Failed to load news:', error)
+        }
+      }
+    },
+    {
+      path: '/news/trusted',
+      name: 'trusted-news',
+      component: HomeView,
+      meta: { requiresAuth: true },
+      beforeEnter: async () => {
+        const newsFilterStore = useNewsFilterStore()
+        newsFilterStore.setFilter('trusted')
+        try {
+          const response = await NewsService.getNews()
+          newsFilterStore.setNews(response.data)
+        } catch (error) {
+          console.error('Failed to load news:', error)
+        }
+      }
+    },
+    {
+      path: '/news/fake',
+      name: 'fake-news',
+      component: HomeView,
+      meta: { requiresAuth: true },
+      beforeEnter: async () => {
+        const newsFilterStore = useNewsFilterStore()
+        newsFilterStore.setFilter('fake')
+        try {
+          const response = await NewsService.getNews()
+          newsFilterStore.setNews(response.data)
+        } catch (error) {
+          console.error('Failed to load news:', error)
+        }
+      }
+    },
+    {
+      path: '/news/unvoted',
+      name: 'unvoted-news',
+      component: HomeView,
+      meta: { requiresAuth: true },
+      beforeEnter: async () => {
+        const newsFilterStore = useNewsFilterStore()
+        newsFilterStore.setFilter('unvoted')
+        try {
+          const response = await NewsService.getNews()
+          newsFilterStore.setNews(response.data)
+        } catch (error) {
+          console.error('Failed to load news:', error)
+        }
+      }
     },
     {
       path: '/new/:id/',
       name: 'news-detail-view',
       component: NewsDetailView,
       props: true,
-      beforeEnter: (to) =>{
-        //put api here
+      beforeEnter: (to) => {
         const id = parseInt(to.params.id as string)
         const newsStore = useNewsStore()
         return NewsService.getNewsById(id)
-        .then((reponse) =>{
-          // need to setup data for the event
-          newsStore.setNews(reponse.data)
-          if (to.matched.length === 1 || to.name === 'news-detail-view') {
-            return { name: 'news-comment-view', params: { id: id.toString() } }
-          }
-        }). catch ((error) =>{
-          if (error.reponse && error.reponse.status === 404){
-            return {
-              name : '404-resource-view',
-              params : { resource:'event' }
+          .then((response) => {
+            newsStore.setNews(response.data)
+            if (to.matched.length === 1 || to.name === 'news-detail-view') {
+              return { name: 'news-comment-view', params: { id: id.toString() } }
             }
-          }else{
-            return { name: 'network-error-view'}
-          }
-        })
+          }).catch((error) => {
+            if (error.response && error.response.status === 404) {
+              return {
+                name: '404-resource-view',
+                params: { resource: 'event' }
+              }
+            } else {
+              return { name: 'network-error-view' }
+            }
+          })
       },
       children: [
         {
@@ -79,7 +136,7 @@ const router = createRouter({
       component: NotFoundView,
     },
     {
-      path: '/nerwork-error',
+      path: '/network-error',
       name: 'network-error-view',
       component: NetworkErrorView,
     },
@@ -115,14 +172,13 @@ const router = createRouter({
     },
   ],
   scrollBehavior(to, from, savedPosition) {
-    // If using browser back/forward, restore old position
     if (savedPosition) {
       return savedPosition
     }
-    // Otherwise always scroll to top
     return { top: 0 }
   }
 })
+
 router.beforeEach(() => {
   nProgress.start()
 })
@@ -131,16 +187,14 @@ router.afterEach(() => {
   nProgress.done()
 })
 
-
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore();
 
   if (to.meta.requiresAuth && !authStore.currentUserFirstName) {
-    next({ path: '/login' }); // redirect if not logged in
+    next({ path: '/login' });
   } else {
-    next(); // allow navigation
+    next();
   }
 });
-
 
 export default router
