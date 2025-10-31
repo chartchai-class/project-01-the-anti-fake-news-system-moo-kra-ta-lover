@@ -1,5 +1,6 @@
-import type { } from '@/types';
+import type { News } from '@/types';
 import apiclient from './AxiosClient';
+import type { AxiosResponse } from 'axios';
 
 
 export default {
@@ -14,11 +15,14 @@ export default {
   getNewsById(id: number) {
     return apiclient.get(`/news/`+id);
   },
-  saveComment(newsId: number, comment: { 
-    user: string; 
-    vote: "Fake" | "Real"; 
-    comment: string; 
-    imageUrls?: string[] 
+  getNewsByKeyword(keyword: string): Promise<AxiosResponse<News[]>> {
+    return apiclient.get<News[]>('/news?detail=' + keyword)
+  },
+  saveComment(newsId: number, comment: {
+    user: string;
+    vote: "Fake" | "Real";
+    comment: string;
+    imageUrls?: string[]
   }) {
     return apiclient.post('/comments', {
       ...comment,
@@ -43,8 +47,8 @@ export default {
       'Authorization': `Bearer ${localStorage.getItem('access_token')}`
     }
   });
-},
-getAllUsers() {
+  },
+  getAllUsers() {
     return apiclient.get('/users', {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('access_token')}`
