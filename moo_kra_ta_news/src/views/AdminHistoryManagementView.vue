@@ -2,12 +2,13 @@
 import CommentItem from '@/components/CommentItem.vue';
 import NewsCard from '@/components/NewsCard.vue';
 import NewsService from '@/services/NewsService';
+import type { Comment, News } from '@/types';
 import { computed, onMounted, ref } from 'vue';
 
 const activeTab = ref<'news' | 'comments'>('news');
 
-const deletedNews = ref([]);
-const deletedComments = ref([]);
+const deletedNews = ref<News[]>([]);
+const deletedComments = ref<Comment[]>([]);
 
 const fetchDeletedData = () => {
   Promise.all([

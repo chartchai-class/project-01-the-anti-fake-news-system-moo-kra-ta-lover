@@ -15,6 +15,10 @@ export interface Comment {
     vote: "Fake" | "Real"
     comment: string
     imageUrls?: string[]
+    news?: {
+    id: number;
+    topic: string;
+  };
 }
 
 export interface NewsState {
