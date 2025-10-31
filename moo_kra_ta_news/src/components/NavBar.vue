@@ -27,8 +27,8 @@ const userProfile = computed(() => getUserProfile(authStore.currentUserFirstName
           <p>|</p>
           <div class="flex gap-6 md:text-sm font-medium text-gray-700">
             <RouterLink to="/">News</RouterLink>
-            <RouterLink to="/news/trusted">Trusted News</RouterLink>
-            <RouterLink to="/news/fake">Fake News</RouterLink>
+            <RouterLink to="/">Trusted News</RouterLink>
+            <RouterLink to="/">Fake News</RouterLink>
           </div>
         </div>
       </div>
