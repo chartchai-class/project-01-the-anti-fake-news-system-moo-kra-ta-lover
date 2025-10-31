@@ -26,9 +26,9 @@ const userProfile = computed(() => getUserProfile(authStore.currentUserFirstName
         <div class="hidden md:flex md:flex-row md:justify-between md:items-center gap-3">
           <p>|</p>
           <div class="flex gap-6 md:text-sm font-medium text-gray-700">
-            <p>News</p>
-            <p>Trusted News</p>
-            <p>Fake News</p>
+            <RouterLink to="/">News</RouterLink>
+            <RouterLink to="/news/trusted">Trusted News</RouterLink>
+            <RouterLink to="/news/fake">Fake News</RouterLink>
           </div>
         </div>
       </div>
