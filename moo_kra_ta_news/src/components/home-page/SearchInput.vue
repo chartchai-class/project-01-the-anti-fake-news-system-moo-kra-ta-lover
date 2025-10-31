@@ -39,7 +39,7 @@ function clearSearch() {
   <div class="w-full flex gap-2 items-center justify-center">
     <div class="relative w-full">
       <input
-        class="w-full border border-gray-300 rounded-full p-2 bg-neutral-100 px-4 pr-10"
+        class="w-full border border-gray-300 rounded-full p-2 bg-neutral-100 px-4 pr-10 focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
         v-model="keyword"
         placeholder="Search any news that suit you"
         @input="updateKeyword"
