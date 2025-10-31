@@ -115,7 +115,16 @@ const userProfile = computed(() => getUserProfile(authStore.currentUserFirstName
     </nav>
 
     <DisclosurePanel class="md:hidden bg-white border-red/10 border-y">
-        <div class="space-y-1 px-2 pb-3 pt-2 sm:px-3">
+      <div class="space-y-1 px-2 pb-3 pt-2 sm:px-3" v-if="!authStore.currentUserFirstName">
+          <DisclosureButton :as="RouterLink" to="/login" class="block rounded-md px-3 py-2 text-base font-medium text-neutral-500 hover:bg-neutral-100 hover:text-black">
+            Sign In
+          </DisclosureButton>
+          <DisclosureButton :as="RouterLink" to="/register" class="block rounded-md px-3 py-2 text-base font-medium text-neutral-500 hover:bg-neutral-100 hover:text-black">
+            Sign Up
+          </DisclosureButton>
+          <!-- <DisclosureButton v-for="item in navigation" :key="item.name" as="a" :href="item.href" :class="[item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white', 'block rounded-md px-3 py-2 text-base font-medium']" :aria-current="item.current ? 'page' : undefined">{{ item.name }}</DisclosureButton> -->
+        </div>
+        <div class="space-y-1 px-2 pb-3 pt-2 sm:px-3" v-if="authStore.currentUserFirstName">
           <DisclosureButton class="block rounded-md px-3 py-2 text-base font-medium text-neutral-500 hover:bg-neutral-100 hover:text-black">
             News
           </DisclosureButton>
@@ -127,7 +136,7 @@ const userProfile = computed(() => getUserProfile(authStore.currentUserFirstName
           </DisclosureButton>
           <!-- <DisclosureButton v-for="item in navigation" :key="item.name" as="a" :href="item.href" :class="[item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-white/5 hover:text-white', 'block rounded-md px-3 py-2 text-base font-medium']" :aria-current="item.current ? 'page' : undefined">{{ item.name }}</DisclosureButton> -->
         </div>
-        <div class="border-t border-red/10 pb-3 pt-4">
+        <div class="border-t border-red/10 pb-3 pt-4" v-if="authStore.currentUserFirstName">
           <div class="flex items-center px-5">
             <div class="shrink-0">
               <div
@@ -146,10 +155,13 @@ const userProfile = computed(() => getUserProfile(authStore.currentUserFirstName
             </button>
           </div>
           <div class="mt-3 space-y-1 px-2">
-            <DisclosureButton :as="RouterLink" to="/UserProfile" class="block rounded-md px-3 py-2 text-base text-neutral-500 hover:bg-neutral-100 hover:text-black">
+            <DisclosureButton :as="RouterLink" to="/Submit-news" class="block rounded-md px-3 py-2 text-base text-neutral-500 hover:bg-neutral-100 hover:text-black">
+              Write
+            </DisclosureButton>
+            <DisclosureButton v-if="authStore.isMember || authStore.isAdmin" :as="RouterLink" to="/UserProfile" class="block rounded-md px-3 py-2 text-base text-neutral-500 hover:bg-neutral-100 hover:text-black">
               User Profile
             </DisclosureButton>
-            <DisclosureButton as="router-link" @click="authStore.logout" class="block rounded-md px-3 py-2 text-base text-neutral-500 hover:bg-neutral-100 hover:text-black">
+            <DisclosureButton :as="RouterLink" @click="authStore.logout" class="block rounded-md px-3 py-2 text-base text-neutral-500 hover:bg-neutral-100 hover:text-black">
               Sign out
             </DisclosureButton>
           </div>
