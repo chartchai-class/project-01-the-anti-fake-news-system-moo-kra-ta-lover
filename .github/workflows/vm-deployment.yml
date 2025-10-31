@@ -27,7 +27,8 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: ./moo_kra_ta_news
+          file: ./moo_kra_ta_news/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/se331-frontend:latest
 
@@ -38,7 +39,7 @@ jobs:
           username: ${{ secrets.HOST_USER_NAME }}
           key: ${{ secrets.HOST_SSH_PRIVATE_KEY }}
           port: 22
-          source: "docker-compose.yml"
+          source: "moo_kra_ta_news/docker-compose.yml"
           target: "/home/ubuntu/frontend"
 
       - name: Docker compose deploy
