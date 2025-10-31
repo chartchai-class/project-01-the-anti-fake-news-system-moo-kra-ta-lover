@@ -5,7 +5,7 @@ import { computed } from 'vue';
 import { RouterLink } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 import LogoWeb from './LogoWeb.vue';
-import { Menu as MenuIcon, X } from 'lucide-vue-next';
+import { Menu as MenuIcon, X, SquarePen } from 'lucide-vue-next';
 
 const authStore = useAuthStore()
 
@@ -57,17 +57,10 @@ const userProfile = computed(() => getUserProfile(authStore.currentUserFirstName
           </div>
       </div>
 
-      <div class="flex gap-3">
-        <RouterLink to="/Submit-news" v-if="authStore.isMember || authStore.isAdmin">
-          <button
-            class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-medium px-4 py-2 rounded-xl transition">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg"
-              viewBox="0 0 16 16">
-              <path fill-rule="evenodd"
-                d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" />
-            </svg>
-            Submit News
-          </button>
+      <div class="flex items-center gap-12">
+        <RouterLink class="flex items-center gap-3" to="/Submit-news" v-if="authStore.isMember || authStore.isAdmin">
+          <SquarePen :size="18" />
+          <span class="text-sm text-gray-700">Write</span>
         </RouterLink>
 
         <div class="flex items-center justify-center " v-if="authStore.currentUserFirstName">
