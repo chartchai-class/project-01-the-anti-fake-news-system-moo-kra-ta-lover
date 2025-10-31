@@ -61,7 +61,7 @@ const onSubmit = handleSubmit((values) => {
   isLoading.value = true
 
   const commentData = {
-    user: { id: authStore.user?.id },
+    user: { id: authStore.user!.id },
     vote: values.vote,
     comment: values.comment,
     imageUrls: values.imageUrls
