@@ -20,13 +20,13 @@ export const useNewsFilterStore = defineStore('newsFilter', () => {
   // In stores/newsFilter.ts
 const filteredNews = computed(() => {
   let result;
-  
+
   switch (activeFilter.value) {
     case 'trusted':
       result = allNews.value.filter(newsItem => {
         const realVotes = newsItem.comments?.filter(c => c.vote === 'Real').length || 0
         const fakeVotes = newsItem.comments?.filter(c => c.vote === 'Fake').length || 0
-        if (realVotes === 0 && fakeVotes === 0) return true
+        if (realVotes === 0 && fakeVotes === 0) return false
         return realVotes > fakeVotes
       })
       break;
@@ -44,8 +44,8 @@ const filteredNews = computed(() => {
       result = allNews.value
       break;
   }
-  
-  // ✅ Sort by date (newest first)
+
+  // Sort by date (newest first)
   return result.sort((a, b) => new Date(b.reportDate).getTime() - new Date(a.reportDate).getTime())
 })
 
