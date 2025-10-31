@@ -27,7 +27,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
-          context: .
+          context: ./moo_kra_ta_news
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/se331-frontend:latest
 
