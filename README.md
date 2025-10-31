@@ -9,12 +9,17 @@ A News Website for people to share their opinion on whether the news is fake or 
 - xiaoyoufung Xiaoyou Fung 652115059 </br>
 - Eakkasit662115058 Eakkasit Nimanussornkul 662115058 
 
-### Video URL
--https://drive.google.com/file/d/1XcbmzOceNU45R68RxovesSehFhZolr_m/view?usp=sharing
+FrontEnd
+Github : https://github.com/chartchai-class/project-01-the-anti-fake-news-system-moo-kra-ta-lover
+BackEnd
+Github : https://github.com/chartchai-class/the-social-anti-fake-news-system-phase-ii-moo-kra-ta-lover
 
-### Deployed Website
--[https://project-01-the-ant-git-8df9a3-eakkasit-nimanussornkuls-projects.vercel.app?_vercel_share=GFdcX8Qnatnw5oiBi9h7ZFDdRWfLjtQH](https://project-01-the-ant-git-8df9a3-eakkasit-nimanussornkuls-projects.vercel.app?_vercel_share=GFdcX8Qnatnw5oiBi9h7ZFDdRWfLjtQH)
-----
+---
+
+VMs
+FrontEnd : http://20.2.91.18:8001
+BackEnd : http://20.2.91.18:8999
+phpMyAdmin : http://20.2.91.18:9000
 
 # Guideline
 ### Commit Message Guidelines
