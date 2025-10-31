@@ -155,7 +155,7 @@ const userProfile = computed(() => getUserProfile(authStore.currentUserFirstName
             </button>
           </div>
           <div class="mt-3 space-y-1 px-2">
-            <DisclosureButton :as="RouterLink" to="/UserProfile" class="block rounded-md px-3 py-2 text-base text-neutral-500 hover:bg-neutral-100 hover:text-black">
+            <DisclosureButton :as="RouterLink" to="/Submit-news" class="block rounded-md px-3 py-2 text-base text-neutral-500 hover:bg-neutral-100 hover:text-black">
               Write
             </DisclosureButton>
             <DisclosureButton v-if="authStore.isMember || authStore.isAdmin" :as="RouterLink" to="/UserProfile" class="block rounded-md px-3 py-2 text-base text-neutral-500 hover:bg-neutral-100 hover:text-black">
