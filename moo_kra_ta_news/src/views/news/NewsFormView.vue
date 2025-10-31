@@ -20,7 +20,7 @@ const showNotification = (message: string) => {
     show: true,
     message,
   }
-  
+
   setTimeout(() => {
     notification.value.show = false
   }, 6000)
@@ -37,7 +37,7 @@ const news = ref<News>({
   comments: [],
 })
 
-// Form validation 
+// Form validation
 const isFormValid = computed(() => {
   return (
     news.value.topic.trim().length > 0 &&
@@ -45,7 +45,7 @@ const isFormValid = computed(() => {
     news.value.shortDetail.trim().length <= 300 &&
     news.value.fullDetail.trim().length >= 50 &&
     singleImageArray.value.length > 0 &&
-    singleImageArray.value[0].trim().length > 0 
+    singleImageArray.value[0].trim().length > 0
   )
 })
 
@@ -67,7 +67,7 @@ async function saveNews() {
 
     const userFullName = `${authStore.user?.firstname || ''} ${authStore.user?.lastname || ''}`.trim()
     news.value.reporter = userFullName || 'Anonymous'
-    
+
     news.value.reportDate = new Date().toISOString()
 
     const newsData = {
@@ -85,7 +85,7 @@ async function saveNews() {
     console.log('News saved successfully:', response)
 
     showNotification('🎉 News posted successfully! Redirecting to home page...')
-    
+
     setTimeout(() => {
       news.value = {
         id: 0,
@@ -98,10 +98,10 @@ async function saveNews() {
         comments: [],
       }
       singleImageArray.value = []
-      
+
       router.push('/')
     }, 2000)
-    
+
   } catch (error) {
     console.error('Error saving news:', error)
     router.push({ name: 'network-error-view' })
@@ -214,10 +214,10 @@ async function saveNews() {
           <label class="block text-sm font-semibold text-gray-800 mb-3">
             News Image
           </label>
-          <ImageUpload 
-    v-model="singleImageArray" 
-    :max-files="1" 
-  />
+          <ImageUpload
+            v-model="singleImageArray"
+            :max-files="1"
+          />
         </div>
 
         <!-- Action Buttons -->

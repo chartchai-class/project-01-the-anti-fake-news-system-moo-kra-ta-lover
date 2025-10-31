@@ -9,14 +9,14 @@ import { computed, ref } from 'vue'
 
 const props = defineProps<{
   comment: Comment
-  showDeleteButton: boolean 
+  showDeleteButton: boolean
 }>()
 
 const emit = defineEmits<{
   deleteComment: [id: number]
 }>()
 
-const userProfile = computed(() => getUserProfile(props.comment.user || ''))
+const userProfile = computed(() => getUserProfile(props.comment.user.firstname + ' ' + props.comment.user.lastname || ''))
 
 const showDeleteModal = ref(false)
 
@@ -51,7 +51,7 @@ const authStore = useAuthStore()
           >
             {{ userProfile.initials }}
           </div>
-          <span class="text-sm sm:text-base">{{ comment.user }}</span>
+          <span class="text-sm sm:text-base">{{ comment.user.firstname }} {{ comment.user.lastname }}</span>
         </div>
 
         <div class="flex items-center gap-2">
