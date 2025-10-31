@@ -24,7 +24,7 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
-      - name: Build and push
+      - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
           context: ./moo_kra_ta_news
@@ -32,7 +32,17 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/se331-frontend:latest
 
-      - name: Copy file via SSH
+      - name: Ensure target folder exists on server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HOST_SERVER }}
+          username: ${{ secrets.HOST_USER_NAME }}
+          key: ${{ secrets.HOST_SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            mkdir -p /home/ubuntu/frontend
+
+      - name: Copy docker-compose.yml via SSH
         uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.HOST_SERVER }}
@@ -52,6 +62,6 @@ jobs:
           script: |
             cd /home/ubuntu/frontend
             echo ${{ secrets.DOCKER_HUB_TOKEN }} | docker login --username ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
-            docker compose down
+            docker compose down || true
             docker compose pull
             docker compose up -d
