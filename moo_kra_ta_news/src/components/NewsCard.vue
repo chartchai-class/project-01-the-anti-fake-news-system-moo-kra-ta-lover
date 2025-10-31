@@ -28,6 +28,19 @@ const fakeComments = computed(() => {
   return props.news.comments?.filter((comment) => comment.vote === 'Fake').length || 0
 })
 
+const totalComments = computed(() => {
+  return (props.news.comments?.length || 0)
+})
+
+const isUnvoted = computed(() => {
+  return totalComments.value === 0
+})
+
+const statusText = computed(() => {
+  if (isUnvoted.value) return 'Unvoted'
+  return realComments.value > fakeComments.value ? 'Trusted' : 'Fake'
+})
+
 const emit = defineEmits<{
   deleteNews: [id: number]
 }>()
@@ -75,7 +88,8 @@ console.log('Is Admin:', authStore.isAdmin)
           />
           <StatusCard
             :isReal="realComments > fakeComments"
-            :text="realComments > fakeComments ? 'Trusted' : 'Fake'"
+            :isUnvoted="isUnvoted"
+            :text="statusText"
           />
         </div>
 
