@@ -1,18 +1,18 @@
 <script setup lang="ts">
+import DeleteButton from '@/components/DeleteButton.vue'
+import DeleteConfirmation from '@/components/DeleteConfirmation.vue'
 import StatusCard from '@/components/home-page/StatusCard.vue'
+import { useAuthStore } from '@/stores/auth'
 import { type News } from '@/types'
 import { formatDate } from '@/utils/dateFormatter'
 import { getUserProfile } from '@/utils/userProfile'
-import { computed } from 'vue'
-import DeleteButton from '@/components/DeleteButton.vue'
-import { ref } from 'vue'
-import DeleteConfirmation from '@/components/DeleteConfirmation.vue'
-import { useAuthStore } from '@/stores/auth'
+import { computed, ref } from 'vue'
 
 const authStore = useAuthStore()
 
 const props = defineProps<{
   news: News
+  showDeleteButton: boolean 
 }>()
 
 // Debug: Log the news data
@@ -63,7 +63,7 @@ console.log('Is Admin:', authStore.isAdmin)
 <template>
   <div class="relative">
     <div class="absolute top-2 right-2 z-10">
-      <DeleteButton v-if="authStore.isAdmin"
+      <DeleteButton v-if="authStore.isAdmin && showDeleteButton"
         @confirm="deleteNews" 
         :show-text="false" 
         size="sm" 
