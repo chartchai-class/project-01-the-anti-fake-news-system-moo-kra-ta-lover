@@ -61,8 +61,8 @@ jobs:
           key: ${{ secrets.HOST_SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            cd /home/ubuntu/frontend
-            echo "🧾 Listing files:"
+            cd /home/ubuntu/frontend/moo_kra_ta_news
+            echo "Listing files:"
             ls -R /home/ubuntu/frontend
             echo ${{ secrets.DOCKER_HUB_TOKEN }} | docker login --username ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
             docker compose -f docker-compose.yml down || true
