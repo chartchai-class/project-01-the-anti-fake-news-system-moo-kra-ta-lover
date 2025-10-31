@@ -1,7 +1,6 @@
 import type { News } from '@/types';
-import apiclient from './AxiosClient';
 import type { AxiosResponse } from 'axios';
-
+import apiclient from './AxiosClient';
 
 export default {
   getNews(limit: number = 100, page: number = 1) {
@@ -18,11 +17,13 @@ export default {
   getNewsByKeyword(keyword: string): Promise<AxiosResponse<News[]>> {
     return apiclient.get<News[]>('/news?detail=' + keyword)
   },
-  saveComment(newsId: number, comment: {
-    user: string;
-    vote: "Fake" | "Real";
-    comment: string;
-    imageUrls?: string[]
+  saveComment(
+    newsId: number, 
+    comment: { 
+      user: {id: number }; 
+      vote: "Fake" | "Real"; 
+      comment: string; 
+      imageUrls?: string[] 
   }) {
     return apiclient.post('/comments', {
       ...comment,
