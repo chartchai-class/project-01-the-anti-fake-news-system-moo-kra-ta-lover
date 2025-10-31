@@ -45,7 +45,6 @@ const validationSchema = yup.object({
   imageUrl: yup
     .string()
     .required('News image is required')
-    .url('Please provide a valid image URL'),
 })
 
 // Setup Vee-Validate form

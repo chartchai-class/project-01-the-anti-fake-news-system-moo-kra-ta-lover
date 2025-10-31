@@ -6,39 +6,20 @@ import NewsCard from '@/components/NewsCard.vue';
 import NewsService from '@/services/NewsService';
 import { useNewsFilterStore, type FilterType } from '@/stores/newsFilter';
 import { computed, onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
 import NewsCarousel from '../components/home-page/NewsCarousel.vue';
 
 const newsFilterStore = useNewsFilterStore();
-const router = useRouter();
 
 const activeFilter = computed(() => newsFilterStore.activeFilter);
 
 onMounted(async () => {
-  // Only load if not already loaded by route guard
-  if (newsFilterStore.allNews.length === 0) {
-    const response = await NewsService.getNews();
-    newsFilterStore.setNews(response.data);
-    console.log('News loaded:', response.data);
-  }
+  const response = await NewsService.getNews();
+  newsFilterStore.setNews(response.data);
+  console.log('News loaded:', response.data);
 });
 
 const handleTabClick = (filter: FilterType) => {
-  // Navigate to the appropriate route
-  switch (filter) {
-    case 'all':
-      router.push({ name: 'home' });
-      break;
-    case 'trusted':
-      router.push({ name: 'trusted-news' });
-      break;
-    case 'fake':
-      router.push({ name: 'fake-news' });
-      break;
-    case 'unvoted':
-      router.push({ name: 'unvoted-news' });
-      break;
-  }
+  newsFilterStore.setFilter(filter);
   currentPage.value = 1;
 };
 
