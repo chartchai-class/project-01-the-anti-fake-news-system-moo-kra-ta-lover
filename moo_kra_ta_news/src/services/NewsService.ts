@@ -1,4 +1,3 @@
-import type { } from '@/types';
 import apiclient from './AxiosClient';
 
 
@@ -45,8 +44,8 @@ export default {
       'Authorization': `Bearer ${localStorage.getItem('access_token')}`
     }
   });
-},
-getAllUsers() {
+  },
+  getAllUsers() {
     return apiclient.get('/users', {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('access_token')}`
