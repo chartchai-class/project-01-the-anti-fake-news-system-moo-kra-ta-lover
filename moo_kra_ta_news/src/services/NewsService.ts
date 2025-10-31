@@ -1,5 +1,6 @@
+import type { News } from '@/types';
+import type { AxiosResponse } from 'axios';
 import apiclient from './AxiosClient';
-
 
 export default {
   getNews(limit: number = 100, page: number = 1) {
@@ -12,6 +13,9 @@ export default {
   },
   getNewsById(id: number) {
     return apiclient.get(`/news/`+id);
+  },
+  getNewsByKeyword(keyword: string): Promise<AxiosResponse<News[]>> {
+    return apiclient.get<News[]>('/news?detail=' + keyword)
   },
   saveComment(
     newsId: number, 
