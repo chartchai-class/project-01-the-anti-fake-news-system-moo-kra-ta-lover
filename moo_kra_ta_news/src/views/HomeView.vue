@@ -98,17 +98,6 @@ const handleDeleteNews = async (newsId: number) => {
 
     <div class="flex md:flex-row flex-col items-start md:items-center justify-between gap-2">
       <h1 class="text-2xl text-left font-semibold">{{ sectionTitle }}</h1>
-
-      <!-- Home Page Pagination -->
-      <div v-if="newsFilterStore.filteredNews.length > 0">
-      <PaginationControls
-        :total-items="newsFilterStore.filteredNews.length"
-        :current-page="currentPage"
-        :items-per-page="itemsPerPage"
-        @page-change="handlePageChange"
-        @page-size-change="handlePageSizeChange"
-      />
-    </div>
     </div>
 
     <div v-if="paginatedNews.length > 0"
@@ -116,7 +105,16 @@ const handleDeleteNews = async (newsId: number) => {
       <NewsCard v-for="newsItem in paginatedNews" :key="newsItem.id" :news="newsItem" @delete-news="handleDeleteNews"/>
     </div>
 
-
+    <!-- Home Page Pagination -->
+    <div v-if="newsFilterStore.filteredNews.length > 0">
+        <PaginationControls
+          :total-items="newsFilterStore.filteredNews.length"
+          :current-page="currentPage"
+          :items-per-page="itemsPerPage"
+          @page-change="handlePageChange"
+          @page-size-change="handlePageSizeChange"
+        />
+    </div>
 
     <!-- Empty state -->
     <div v-else class="flex flex-col items-center justify-center py-12 text-neutral-500">
